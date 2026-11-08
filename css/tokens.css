@@ -1,0 +1,37 @@
+/* ========================================
+   Design Tokens
+   All colors, spacing, typography, and
+   animation values as CSS custom properties.
+   ======================================== */
+
+:root {
+  /* Canvas / Background */
+  --bg:           #16161a;
+  --grid-dot:     #2a2b33;
+  --panel:        #1e1f25;
+  --panel-2:      #26272e;
+  --border:       #34353e;
+
+  /* Text */
+  --text:         #eceef3;
+  --text-muted:   #8d909c;
+
+  /* Accent colors */
+  --primary:       #ff6d5a;
+  --primary-hover: #ff8a7a;
+  --accent:        #ea4b71;
+  --success:       #2fbf71;
+
+  /* Typography */
+  --font-display: 'Unbounded', sans-serif;
+  --font-ui:      'Space Grotesk', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Layout */
+  --topbar-h:     56px;
+  --node-w:       280px;
+  --node-radius:  8px;
+
+  /* Timing */
+  --ease-smooth:  cubic-bezier(0.22, 1, 0.36, 1);
+}

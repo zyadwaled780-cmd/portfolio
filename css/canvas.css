@@ -1,0 +1,551 @@
+/* ========================================
+   Canvas — viewport, world, dot grid,
+   dither overlay, vignette, nodes, SVG
+   ======================================== */
+
+/* --- Viewport (visible area below topbar) --- */
+.viewport {
+  position: fixed;
+  inset: 0;
+  top: var(--topbar-h);
+  overflow: hidden;
+  background: var(--bg);
+  cursor: grab;
+  touch-action: none;
+}
+
+.viewport.viewport--dragging {
+  cursor: grabbing;
+}
+
+/* --- Dot grid (CSS radial gradient, static) --- */
+.viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--grid-dot) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- Dither / halftone noise overlay --- */
+/* Background image set from JS (Bayer canvas rendered once) */
+.dither-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* --- Soft vignette --- */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* --- World container (moved by camera) --- */
+.world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+  transform-origin: 0 0;
+  z-index: 3;
+}
+
+/* --- SVG connections layer --- */
+.connections-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ========================================
+   Node cards — shared base
+   ======================================== */
+
+.node {
+  position: absolute;
+  width: var(--node-w);
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: var(--node-radius);
+  z-index: 10;
+  user-select: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  /* Centering handled by GSAP (xPercent/yPercent) */
+}
+
+/* Active node highlight */
+.node--active {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(255, 109, 90, 0.08);
+}
+
+.node:hover:not(.node--active) {
+  border-color: rgba(255, 109, 90, 0.45);
+}
+
+/* --- Colored left accent stripe --- */
+.node__stripe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--node-radius) 0 0 var(--node-radius);
+  background: var(--primary);
+}
+
+.node__stripe--accent {
+  background: var(--accent);
+}
+
+.node__stripe--muted {
+  background: var(--text-muted);
+}
+
+.node--ghost .node__stripe {
+  background: var(--text-muted);
+}
+
+/* --- Node header --- */
+.node__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.node__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.node__icon--accent {
+  color: var(--accent);
+}
+
+.node--ghost .node__icon {
+  color: var(--text-muted);
+}
+
+.node__info {
+  min-width: 0;
+}
+
+.node__title {
+  font-family: var(--font-ui);
+  font-size: clamp(13px, 1vw, 14px);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.node__subtitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+/* --- Node body --- */
+.node__body {
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* State containers — toggled in JS */
+.node__state { display: none; }
+.node__state--active { display: block; }
+
+/* ========================================
+   Trigger node (Phase 1 styles)
+   ======================================== */
+
+/* --- Execute button --- */
+.btn-execute {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 20px;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background 0.2s ease, transform 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-execute:hover {
+  background: var(--primary-hover);
+}
+
+.btn-execute:active {
+  transform: scale(0.97);
+}
+
+.btn-execute__icon {
+  font-size: 10px;
+}
+
+/* --- Hint text --- */
+.trigger-hint {
+  text-align: center;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+/* --- Counter (running state) --- */
+.node__counter {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  letter-spacing: 0.08em;
+  padding: 4px 0;
+}
+
+/* --- Success state --- */
+.node__success-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.node__check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(47, 191, 113, 0.15);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.node__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(47, 191, 113, 0.12);
+  color: var(--success);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+}
+
+/* ========================================
+   Intro node — "Who I Am"
+   ======================================== */
+
+.node--intro {
+  width: 380px; /* wider to fit pitch text */
+}
+
+.intro__title {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.intro__pitch {
+  margin-bottom: 12px;
+}
+
+.intro__paragraph {
+  font-family: var(--font-ui);
+  font-size: clamp(11px, 0.85vw, 13px);
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.intro__paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.intro__credential {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  opacity: 0.7;
+}
+
+/* ========================================
+   Hub node — "My Work"
+   ======================================== */
+
+.node--hub {
+  /* Same width as standard nodes */
+}
+
+/* ========================================
+   Project nodes
+   ======================================== */
+
+.node--project {
+  width: 300px;
+}
+
+.project__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.project__problem {
+  font-family: var(--font-ui);
+  font-size: clamp(11px, 0.85vw, 13px);
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+
+/* Image placeholder — dithered pattern */
+.project__image-placeholder {
+  width: 100%;
+  height: 100px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dithered texture on placeholder (using CSS pattern) */
+.project__image-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 6px 6px;
+  opacity: 0.5;
+}
+
+.project__image-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 1;
+}
+
+/* Coming-soon muted appearance (not opacity — GSAP controls opacity) */
+.node--coming-soon .node__body {
+  opacity: 0.55;
+}
+
+
+/* ========================================
+   Let's Talk & Digital Twin nodes
+   ======================================== */
+
+.node--talk {
+  /* Standard width */
+}
+
+.node--digital-twin {
+  border-style: dashed;
+}
+
+.node__icon--muted {
+  color: var(--text-muted);
+}
+
+.btn-digital-twin {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  border-style: dashed;
+  letter-spacing: 0.04em;
+}
+
+.talk__text {
+  font-family: var(--font-ui);
+  font-size: clamp(11px, 0.85vw, 13px);
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+/* ========================================
+   Shared node action button
+   ======================================== */
+
+.btn-node-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 9px 16px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-node-action:hover {
+  background: var(--border);
+  border-color: var(--text-muted);
+}
+
+.btn-node-action:active {
+  transform: scale(0.97);
+}
+
+/* Contact button gets accent color */
+.btn-contact {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-contact:hover {
+  background: #d8416a;
+  border-color: #d8416a;
+}
+
+/* ========================================
+   Connection handles
+   ======================================== */
+
+/* --- Output handle (right side) --- */
+.node__handle {
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  border: 2px solid var(--border);
+  z-index: 11;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.node__handle--input {
+  right: auto;
+  left: -8px;
+}
+
+/* ========================================
+   Node running / success states
+   ======================================== */
+
+.node--running {
+  border-color: var(--primary);
+  box-shadow: 0 0 24px rgba(255, 109, 90, 0.12),
+              0 0 60px rgba(255, 109, 90, 0.05);
+}
+
+.node--running .node__handle {
+  border-color: var(--primary);
+}
+
+.node--success {
+  border-color: var(--success);
+  box-shadow: 0 0 24px rgba(47, 191, 113, 0.12),
+              0 0 60px rgba(47, 191, 113, 0.05);
+}
+
+.node--success .node__handle {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.node--success .node__counter {
+  color: var(--success);
+}
+
+/* --- Ghost / placeholder node --- */
+.node--ghost {
+  opacity: 0;
+  border-style: dashed;
+  border-color: var(--border);
+}
+
+/* --- Running pulse animation (CSS, toggled by class) --- */
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 109, 90, 0.10); }
+  50%      { box-shadow: 0 0 35px rgba(255, 109, 90, 0.22); }
+}
+
+.node--running {
+  animation: nodePulse 1s ease-in-out infinite;
+}

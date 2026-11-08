@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zyad Waled — AI Automation for Businesses</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Design tokens + styles -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/canvas.css">
+  <link rel="stylesheet" href="css/ui.css">
+
+  <!-- GSAP 3.12 (animation library) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- ======== Top bar ======== -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <span class="wordmark">ZYAD WALED</span>
+    </div>
+    <div class="topbar__right">
+      <!-- Sound toggle -->
+      <button class="sound-toggle" id="sound-toggle" aria-label="Sound off, click to unmute">
+        [ ♪
+        <span class="sound-bars">
+          <span class="sound-bars__bar"></span>
+          <span class="sound-bars__bar"></span>
+          <span class="sound-bars__bar"></span>
+        </span>
+        ]
+      </button>
+
+      <!-- Navigation pills -->
+      <nav class="nav-pills" aria-label="Main navigation">
+        <a class="pill pill--active" id="nav-work" href="#work">WORK</a>
+        <a class="pill" id="nav-info" href="#info">INFO</a>
+        <a class="pill" id="nav-contact" href="#contact">CONTACT</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======== Canvas ======== -->
+  <div class="viewport" id="viewport">
+    <!-- Static dither texture overlay (background set from JS) -->
+    <div class="dither-overlay" id="dither-overlay"></div>
+    <!-- Soft vignette -->
+    <div class="vignette"></div>
+
+    <!-- World container (transformed by camera) -->
+    <div class="world" id="world">
+      <!-- SVG layer for connection lines -->
+      <svg class="connections-svg" id="connections-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <!-- Nodes are appended here by JS -->
+    </div>
+  </div>
+
+  <!-- ======== Navigation controls (Phase 2) ======== -->
+  <button class="nav-btn nav-btn--prev" id="btn-prev" aria-label="Previous node">
+    ← Prev
+  </button>
+  <button class="nav-btn nav-btn--next" id="btn-next" aria-label="Next node">
+    Next →
+  </button>
+
+  <!-- Progress indicator -->
+  <div class="progress-indicator" id="progress-indicator" aria-live="polite">
+    01 / 01
+  </div>
+
+  <!-- ======== Project Detail View (Phase 3) ======== -->
+  <div
+    class="project-modal"
+    id="project-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="project-modal-title"
+  >
+    <div class="project-modal__backdrop" id="project-modal-backdrop"></div>
+
+    <article class="project-modal__card" id="project-modal-card">
+      <div class="project-modal__stripe" id="project-modal-stripe"></div>
+
+      <!-- Top bar inside modal -->
+      <header class="project-modal__header">
+        <div class="project-modal__meta">
+          <span class="project-modal__index" id="project-modal-index">[ PROJECT 01 / 04 ]</span>
+          <span class="project-modal__status" id="project-modal-status">● Completed workflow</span>
+        </div>
+
+        <div class="project-modal__controls">
+          <button
+            class="project-modal__nav-btn"
+            id="project-modal-prev"
+            aria-label="Previous project"
+          >
+            [ ← Prev ]
+          </button>
+          <button
+            class="project-modal__nav-btn"
+            id="project-modal-next"
+            aria-label="Next project"
+          >
+            [ Next → ]
+          </button>
+          <button
+            class="project-modal__close"
+            id="project-modal-close"
+            aria-label="Close project view and return to workflow"
+          >
+            [ ✕ Close · Esc ]
+          </button>
+        </div>
+      </header>
+
+      <!-- Main content grid: Left = big image area, Right = Problem / Built / Outcome / Stack / CTA -->
+      <div class="project-modal__body">
+        <!-- Left column: Big image area -->
+        <div class="project-modal__media" id="project-modal-media">
+          <div class="project-modal__image-placeholder" id="project-modal-placeholder">
+            <span class="project-modal__corner project-modal__corner--tl">┌</span>
+            <span class="project-modal__corner project-modal__corner--tr">┐</span>
+            <span class="project-modal__corner project-modal__corner--bl">└</span>
+            <span class="project-modal__corner project-modal__corner--br">┘</span>
+            <div class="project-modal__placeholder-inner">
+              <span class="project-modal__placeholder-tag">[ PREVIEW ]</span>
+              <span class="project-modal__placeholder-label">Image coming soon</span>
+            </div>
+          </div>
+          <img
+            class="project-modal__image"
+            id="project-modal-image"
+            src=""
+            alt=""
+            hidden
+          >
+        </div>
+
+        <!-- Right column: Copy + Tech chips + CTA -->
+        <div class="project-modal__content">
+          <h2 class="project-modal__title" id="project-modal-title">Project Title</h2>
+
+          <div class="project-modal__sections">
+            <section class="project-modal__section">
+              <h3 class="project-modal__label">Problem</h3>
+              <p class="project-modal__text project-modal__text--lead" id="project-modal-problem"></p>
+            </section>
+
+            <section class="project-modal__section">
+              <h3 class="project-modal__label">What I built</h3>
+              <p class="project-modal__text" id="project-modal-built"></p>
+            </section>
+
+            <section class="project-modal__section">
+              <h3 class="project-modal__label">Outcome</h3>
+              <p class="project-modal__text project-modal__text--outcome" id="project-modal-outcome"></p>
+            </section>
+          </div>
+
+          <!-- De-emphasized tech stack chips -->
+          <div class="project-modal__stack-wrap" id="project-modal-stack-wrap">
+            <span class="project-modal__stack-label">Tools used</span>
+            <div class="project-modal__stack" id="project-modal-stack"></div>
+          </div>
+
+          <!-- Call to action row -->
+          <div class="project-modal__actions">
+            <button class="btn-project-cta" id="project-modal-cta">
+              Discuss a similar project →
+            </button>
+            <a
+              class="link-project-code"
+              id="project-modal-repo"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View code ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ======== Info & Contact View (Phase 4) ======== -->
+  <div
+    class="info-view"
+    id="info-view"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="info-view-name"
+  >
+    <!-- Top bar inside Info view -->
+    <div class="info-view__bar">
+      <span class="info-view__tag">[ INFO // PROFILE &amp; CONTACT ]</span>
+      <button
+        class="info-view__close"
+        id="info-view-close"
+        aria-label="Close Info view and return to workflow"
+      >
+        [ ← Return to workflow · Esc ]
+      </button>
+    </div>
+
+    <!-- Scrollable editorial container -->
+    <div class="info-view__scroll" id="info-view-scroll">
+      <div class="info-view__inner">
+
+        <!-- 01. Hero / About -->
+        <section class="info-section info-section--hero" id="info-about-section">
+          <span class="info-section__num">[ 01 // ABOUT ]</span>
+          <h1 class="info-hero__name" id="info-view-name">ZYAD WALED</h1>
+          <p class="info-hero__subtitle" id="info-view-subtitle">AI Automation for Businesses</p>
+          <p class="info-hero__lead" id="info-view-lead"></p>
+          <div class="info-hero__paragraphs" id="info-view-paragraphs"></div>
+        </section>
+
+        <!-- 02. Qualification & Capabilities (2 columns) -->
+        <section class="info-section info-section--grid">
+          <div class="info-col">
+            <span class="info-section__num">[ 02 // QUALIFICATION &amp; BACKGROUND ]</span>
+            <h2 class="info-col__heading">Where I Come From</h2>
+            <dl class="info-qual-list" id="info-view-qualifications"></dl>
+          </div>
+
+          <div class="info-col">
+            <span class="info-section__num">[ 03 // WHAT I BUILD ]</span>
+            <h2 class="info-col__heading">How I Help Businesses</h2>
+            <div class="info-skill-list" id="info-view-skills"></div>
+            <div class="info-tools-wrap">
+              <span class="info-tools__label">Tools behind the scenes</span>
+              <div class="info-tools__chips" id="info-view-tools"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03. Reserved Digital Twin placeholder block -->
+        <section class="info-section info-section--twin">
+          <div class="info-twin-card">
+            <div class="info-twin-card__left">
+              <span class="info-section__num">[ 04 // DIGITAL TWIN · RESERVED ]</span>
+              <h2 class="info-twin-card__title" id="info-twin-title">Digital Twin — AI Assistant</h2>
+              <p class="info-twin-card__desc" id="info-twin-desc"></p>
+            </div>
+            <div class="info-twin-card__right">
+              <span class="info-twin-card__badge" id="info-twin-badge">[ ◉ CHATBOT COMING SOON ]</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 04. Contact & Elsewhere (2 columns matching goodgrowth mood) -->
+        <section class="info-section info-section--contact" id="info-contact-section">
+          <div class="info-col">
+            <span class="info-section__num">[ 05 // CONTACT ]</span>
+            <h2 class="info-contact__heading" id="info-contact-heading">Let’s Automate Your Busywork</h2>
+            <p class="info-contact__pitch" id="info-contact-pitch"></p>
+            <div class="info-contact__actions">
+              <a class="btn-project-cta" id="info-contact-mailto" href="mailto:hello@example.com">
+                Send an email →
+              </a>
+              <button class="info-copy-btn" id="info-copy-email" type="button">
+                [ Copy email ]
+              </button>
+            </div>
+          </div>
+
+          <div class="info-col">
+            <span class="info-section__num">[ 06 // ELSEWHERE ]</span>
+            <h2 class="info-col__heading">Direct Links</h2>
+            <ul class="info-elsewhere-list">
+              <li>
+                <a
+                  class="info-elsewhere-link"
+                  id="info-link-linkedin"
+                  href="https://linkedin.com/in/zyad-waled-4048a33a0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>LinkedIn</span>
+                  <span class="info-elsewhere-link__arrow">[ Connect ↗ ]</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="info-elsewhere-link"
+                  id="info-link-github"
+                  href="https://github.com/zyadwaled780-cmd"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>GitHub</span>
+                  <span class="info-elsewhere-link__arrow">[ Repositories ↗ ]</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="info-elsewhere-link"
+                  id="info-link-email"
+                  href="mailto:hello@example.com"
+                >
+                  <span>Email</span>
+                  <span class="info-elsewhere-link__arrow" id="info-link-email-text">hello@example.com ↗</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== Reserved Digital Twin quick button (Phase 4) ======== -->
+  <button
+    class="btn-twin-shortcut"
+    id="btn-twin-shortcut"
+    aria-label="Digital Twin AI chatbot placeholder (Coming soon)"
+  >
+    [ ◉ Digital Twin · Soon ]
+  </button>
+
+  <!-- ======== Bottom center controls: Fit workflow + Replay ======== -->
+  <div class="bottom-controls">
+    <button
+      class="btn-overview"
+      id="btn-overview"
+      aria-label="Zoom out to fit the entire workflow"
+    >
+      [ ⊞ Fit workflow ]
+    </button>
+    <button class="btn-replay" id="btn-replay" aria-label="Replay the execution sequence">
+      [ replay ]
+    </button>
+  </div>
+
+  <!-- Screen-reader live region for workflow step announcements -->
+  <div class="sr-only" id="sr-announcer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ======== App entry ======== -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
