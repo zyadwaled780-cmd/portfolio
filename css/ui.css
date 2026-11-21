@@ -61,7 +61,7 @@
 }
 
 .lang-chooser__title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Times New Roman', Times, Georgia, serif;
   font-size: clamp(1.85rem, 3.5vw, 2.6rem);
   color: var(--text);
   margin-bottom: 8px;
@@ -97,7 +97,7 @@
 .lang-option-btn--en {
   direction: ltr;
   text-align: left;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Times New Roman', Times, Georgia, serif;
 }
 
 .lang-option-btn--ar {
@@ -123,7 +123,7 @@
 }
 
 .lang-option-btn--en .lang-option-btn__name {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Times New Roman', Times, Georgia, serif;
 }
 
 .lang-option-btn--ar .lang-option-btn__name {
