@@ -1,355 +1,502 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="dark" data-lang-pending="true">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zyad Waled — AI Automation for Businesses</title>
+  <title>Zyad Waled Talat — AI and Automation Specialist</title>
+  <meta
+    name="description"
+    content="Zyad Waled Talat — AI and Automation Specialist helping businesses lower costs, improve work efficiency, and automate repetitive tasks."
+  >
 
-  <!-- Google Fonts -->
+  <!-- Early Theme & Saved Language Script (prevents flash of wrong theme or language chooser) -->
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('zw_portfolio_theme');
+        var theme = (savedTheme === 'light' || savedTheme === 'dark')
+          ? savedTheme
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        var savedLang = localStorage.getItem('zw_portfolio_lang');
+        if (savedLang === 'en' || savedLang === 'ar') {
+          document.documentElement.setAttribute('lang', savedLang);
+          document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+          document.documentElement.removeAttribute('data-lang-pending');
+          document.documentElement.setAttribute('data-lang-ready', 'true');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Google Fonts: Playfair Display & Open Sans (English) + Aref Ruqaa & Noto Naskh Arabic (Arabic) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
     rel="stylesheet"
   >
 
-  <!-- Design tokens + styles -->
+  <!-- Stylesheets (relative paths for GitHub Pages /portfolio/ compatibility) -->
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/canvas.css">
   <link rel="stylesheet" href="css/ui.css">
-
-  <!-- GSAP 3.12 (animation library) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-<body>
+<body data-page="home">
 
-  <!-- ======== Top bar ======== -->
-  <header class="topbar">
-    <div class="topbar__left">
-      <span class="wordmark">ZYAD WALED</span>
-    </div>
-    <div class="topbar__right">
-      <!-- Sound toggle -->
-      <button class="sound-toggle" id="sound-toggle" aria-label="Sound off, click to unmute">
-        [ ♪
-        <span class="sound-bars">
-          <span class="sound-bars__bar"></span>
-          <span class="sound-bars__bar"></span>
-          <span class="sound-bars__bar"></span>
-        </span>
-        ]
-      </button>
-
-      <!-- Navigation pills -->
-      <nav class="nav-pills" aria-label="Main navigation">
-        <a class="pill pill--active" id="nav-work" href="#work">WORK</a>
-        <a class="pill" id="nav-info" href="#info">INFO</a>
-        <a class="pill" id="nav-contact" href="#contact">CONTACT</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ======== Canvas ======== -->
-  <div class="viewport" id="viewport">
-    <!-- Static dither texture overlay (background set from JS) -->
-    <div class="dither-overlay" id="dither-overlay"></div>
-    <!-- Soft vignette -->
-    <div class="vignette"></div>
-
-    <!-- World container (transformed by camera) -->
-    <div class="world" id="world">
-      <!-- SVG layer for connection lines -->
-      <svg class="connections-svg" id="connections-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-      <!-- Nodes are appended here by JS -->
-    </div>
-  </div>
-
-  <!-- ======== Navigation controls (Phase 2) ======== -->
-  <button class="nav-btn nav-btn--prev" id="btn-prev" aria-label="Previous node">
-    ← Prev
-  </button>
-  <button class="nav-btn nav-btn--next" id="btn-next" aria-label="Next node">
-    Next →
-  </button>
-
-  <!-- Progress indicator -->
-  <div class="progress-indicator" id="progress-indicator" aria-live="polite">
-    01 / 01
-  </div>
-
-  <!-- ======== Project Detail View (Phase 3) ======== -->
-  <div
-    class="project-modal"
-    id="project-modal"
+  <!-- =========================================================
+       First-Visit Language Selection Overlay
+       ========================================================= -->
+  <section
+    class="lang-chooser"
+    id="lang-chooser"
     role="dialog"
     aria-modal="true"
-    aria-hidden="true"
-    aria-labelledby="project-modal-title"
+    aria-labelledby="chooser-title"
   >
-    <div class="project-modal__backdrop" id="project-modal-backdrop"></div>
+    <div class="lang-chooser__topbar">
+      <button
+        type="button"
+        class="ctrl-btn"
+        id="chooser-theme-toggle"
+        aria-label="Toggle light or dark mode"
+      >
+        ☀️ Light / فاتح
+      </button>
+    </div>
 
-    <article class="project-modal__card" id="project-modal-card">
-      <div class="project-modal__stripe" id="project-modal-stripe"></div>
+    <div class="lang-chooser__card">
+      <span class="lang-chooser__badge">Zyad Waled Talat · زياد وليد طلعت</span>
+      <h1 class="lang-chooser__title" id="chooser-title">Choose Your Language</h1>
+      <p class="lang-chooser__subtitle" lang="ar" dir="rtl">اختر اللغة المفضلة لتصفح الموقع</p>
 
-      <!-- Top bar inside modal -->
-      <header class="project-modal__header">
-        <div class="project-modal__meta">
-          <span class="project-modal__index" id="project-modal-index">[ PROJECT 01 / 04 ]</span>
-          <span class="project-modal__status" id="project-modal-status">● Completed workflow</span>
+      <div class="lang-chooser__grid">
+        <!-- English Option -->
+        <button
+          type="button"
+          class="lang-option-btn lang-option-btn--en"
+          id="choose-en"
+          lang="en"
+          dir="ltr"
+        >
+          <div>
+            <span class="lang-option-btn__name">English</span>
+            <span class="lang-option-btn__desc">
+              See how I help businesses lower costs, improve efficiency, and automate repetitive tasks.
+            </span>
+          </div>
+          <span class="lang-option-btn__cta">Continue in English →</span>
+        </button>
+
+        <!-- Arabic Option -->
+        <button
+          type="button"
+          class="lang-option-btn lang-option-btn--ar"
+          id="choose-ar"
+          lang="ar"
+          dir="rtl"
+        >
+          <div>
+            <span class="lang-option-btn__name">العربية</span>
+            <span class="lang-option-btn__desc">
+              اكتشف كيف أساعد الشركات وأصحاب الأعمال على خفض التكاليف وأتمتة المهام المتكررة.
+            </span>
+          </div>
+          <span class="lang-option-btn__cta">المتابعة بالعربية ←</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       Main Portfolio Shell (Revealed after language choice)
+       ========================================================= -->
+  <div id="app-shell">
+
+    <!-- ======== Sticky Header & Navigation ======== -->
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand-link" href="#home">
+          <span class="brand-link__name" id="brand-name">Zyad Waled Talat</span>
+          <span class="brand-link__role" id="brand-role">AI &amp; Automation Specialist</span>
+        </a>
+
+        <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+          <a class="site-nav__link site-nav__link--active" id="nav-link-home" data-section="home" href="#home" aria-current="location">Home</a>
+          <a class="site-nav__link" id="nav-link-about" data-section="about" href="#about">About</a>
+          <a class="site-nav__link" id="nav-link-services" data-section="services" href="#services">How I Help</a>
+          <a class="site-nav__link" id="nav-link-background" data-section="background" href="#background">Background</a>
+          <a class="site-nav__link" id="nav-link-work" href="work.html">Work</a>
+          <a class="site-nav__link" id="nav-link-contact" data-section="contact" href="#contact">Contact</a>
+        </nav>
+
+        <div class="header-controls">
+          <button
+            type="button"
+            class="ctrl-btn ctrl-btn--lang"
+            id="btn-lang-switch"
+            aria-label="Switch language to Arabic"
+          >
+            العربية
+          </button>
+
+          <button
+            type="button"
+            class="ctrl-btn"
+            id="btn-theme-toggle"
+            aria-label="Switch between light and dark mode"
+          >
+            ☀️ Light
+          </button>
+
+          <button
+            type="button"
+            class="ctrl-btn mobile-menu-btn"
+            id="btn-mobile-menu"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Toggle navigation menu"
+          >
+            <span aria-hidden="true">☰</span>
+            <span id="mobile-menu-label">Menu</span>
+          </button>
         </div>
+      </div>
+    </header>
 
-        <div class="project-modal__controls">
-          <button
-            class="project-modal__nav-btn"
-            id="project-modal-prev"
-            aria-label="Previous project"
-          >
-            [ ← Prev ]
-          </button>
-          <button
-            class="project-modal__nav-btn"
-            id="project-modal-next"
-            aria-label="Next project"
-          >
-            [ Next → ]
-          </button>
-          <button
-            class="project-modal__close"
-            id="project-modal-close"
-            aria-label="Close project view and return to workflow"
-          >
-            [ ✕ Close · Esc ]
-          </button>
+    <main>
+      <!-- ======== 1. Introduction / Hero Section ======== -->
+      <section class="hero-section" id="home">
+        <div class="container">
+          <div class="hero-card">
+            <span class="section-eyebrow" id="hero-badge">
+              AI and Automation Specialist · 6th of October City, Egypt
+            </span>
+
+            <h1 class="hero-headline" id="main-heading">
+              Help Your Business Lower Costs and Stop Losing Hours to Repetitive Work
+            </h1>
+
+            <p class="hero-objective" id="hero-objective">
+              I help businesses lower costs, improve work efficiency, and automate repetitive tasks that take too much time and effort. Improving your work is my concern, so you don’t have to worry.
+            </p>
+
+            <p class="hero-supporting" id="hero-supporting">
+              Whether your team spends hours answering repeated customer questions, sorting incoming emails, or copying data between tools, I design reliable automations and AI assistants that fit the way you already work.
+            </p>
+
+            <!-- Primary Customer CTAs: Call, Email, Download CV, View Work -->
+            <div class="hero-actions">
+              <a class="btn btn--primary" id="hero-cta-call" href="tel:+201006889003">
+                <span aria-hidden="true">📞</span>
+                <span id="hero-cta-call-text">Call Me</span>
+                <span class="ltr-inline">(+20 100 688 9003)</span>
+              </a>
+
+              <a class="btn btn--secondary" id="hero-cta-email" href="mailto:zyadwaled780@gmail.com">
+                <span aria-hidden="true">✉️</span>
+                <span id="hero-cta-email-text">Email Me</span>
+              </a>
+
+              <a
+                class="btn btn--outline"
+                id="hero-cta-cv"
+                href="assets/Zyad-Waled-Talat-CV.pdf"
+                download="Zyad-Waled-Talat-CV.pdf"
+              >
+                <span aria-hidden="true">📄</span>
+                <span id="hero-cta-cv-text">Download CV (PDF)</span>
+              </a>
+
+              <a class="btn btn--outline" id="hero-cta-work" href="work.html">
+                View My Work →
+              </a>
+            </div>
+
+            <!-- Quick Summary Facts -->
+            <div class="hero-facts" id="hero-facts"></div>
+          </div>
         </div>
-      </header>
+      </section>
 
-      <!-- Main content grid: Left = big image area, Right = Problem / Built / Outcome / Stack / CTA -->
-      <div class="project-modal__body">
-        <!-- Left column: Big image area -->
-        <div class="project-modal__media" id="project-modal-media">
-          <div class="project-modal__image-placeholder" id="project-modal-placeholder">
-            <span class="project-modal__corner project-modal__corner--tl">┌</span>
-            <span class="project-modal__corner project-modal__corner--tr">┐</span>
-            <span class="project-modal__corner project-modal__corner--bl">└</span>
-            <span class="project-modal__corner project-modal__corner--br">┘</span>
-            <div class="project-modal__placeholder-inner">
-              <span class="project-modal__placeholder-tag">[ PREVIEW ]</span>
-              <span class="project-modal__placeholder-label">Image coming soon</span>
+      <!-- ======== 2. About Me Section ======== -->
+      <section class="section" id="about">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow" id="about-eyebrow">About Me</span>
+            <h2 class="section-title" id="about-title">A Business-First Approach to AI and Automation</h2>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-narrative">
+              <p class="about-lead" id="about-lead"></p>
+              <div id="about-paragraphs"></div>
+            </div>
+
+            <div class="pillars-box">
+              <h3 class="pillars-box__heading" id="pillars-heading">Why Work With Me</h3>
+              <div class="pillars-list" id="about-pillars"></div>
             </div>
           </div>
-          <img
-            class="project-modal__image"
-            id="project-modal-image"
-            src=""
-            alt=""
-            hidden
-          >
         </div>
+      </section>
 
-        <!-- Right column: Copy + Tech chips + CTA -->
-        <div class="project-modal__content">
-          <h2 class="project-modal__title" id="project-modal-title">Project Title</h2>
-
-          <div class="project-modal__sections">
-            <section class="project-modal__section">
-              <h3 class="project-modal__label">Problem</h3>
-              <p class="project-modal__text project-modal__text--lead" id="project-modal-problem"></p>
-            </section>
-
-            <section class="project-modal__section">
-              <h3 class="project-modal__label">What I built</h3>
-              <p class="project-modal__text" id="project-modal-built"></p>
-            </section>
-
-            <section class="project-modal__section">
-              <h3 class="project-modal__label">Outcome</h3>
-              <p class="project-modal__text project-modal__text--outcome" id="project-modal-outcome"></p>
-            </section>
+      <!-- ======== 3. How I Can Help (Services) Section ======== -->
+      <section class="section section--alt" id="services">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow" id="services-eyebrow">How I Can Help</span>
+            <h2 class="section-title" id="services-title">Practical Solutions Focused on Business Results</h2>
+            <p class="section-subtitle" id="services-subtitle"></p>
           </div>
 
-          <!-- De-emphasized tech stack chips -->
-          <div class="project-modal__stack-wrap" id="project-modal-stack-wrap">
-            <span class="project-modal__stack-label">Tools used</span>
-            <div class="project-modal__stack" id="project-modal-stack"></div>
-          </div>
+          <div class="services-grid" id="services-grid"></div>
 
-          <!-- Call to action row -->
-          <div class="project-modal__actions">
-            <button class="btn-project-cta" id="project-modal-cta">
-              Discuss a similar project →
-            </button>
-            <a
-              class="link-project-code"
-              id="project-modal-repo"
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View code ↗
+          <!-- Optional Work / Projects Callout Banner -->
+          <div class="work-callout">
+            <div>
+              <h3 class="work-callout__title" id="work-banner-title">Want to see real examples of these solutions?</h3>
+              <p class="work-callout__desc" id="work-banner-desc">
+                Explore my completed projects and optional interactive workflow showcase on a dedicated page.
+              </p>
+            </div>
+            <a class="btn btn--primary" id="work-banner-cta" href="work.html">
+              View Projects →
             </a>
           </div>
         </div>
-      </div>
-    </article>
-  </div>
+      </section>
 
-  <!-- ======== Info & Contact View (Phase 4) ======== -->
-  <div
-    class="info-view"
-    id="info-view"
-    role="dialog"
-    aria-modal="true"
-    aria-hidden="true"
-    aria-labelledby="info-view-name"
-  >
-    <!-- Top bar inside Info view -->
-    <div class="info-view__bar">
-      <span class="info-view__tag">[ INFO // PROFILE &amp; CONTACT ]</span>
-      <button
-        class="info-view__close"
-        id="info-view-close"
-        aria-label="Close Info view and return to workflow"
-      >
-        [ ← Return to workflow · Esc ]
-      </button>
-    </div>
-
-    <!-- Scrollable editorial container -->
-    <div class="info-view__scroll" id="info-view-scroll">
-      <div class="info-view__inner">
-
-        <!-- 01. Hero / About -->
-        <section class="info-section info-section--hero" id="info-about-section">
-          <span class="info-section__num">[ 01 // ABOUT ]</span>
-          <h1 class="info-hero__name" id="info-view-name">ZYAD WALED</h1>
-          <p class="info-hero__subtitle" id="info-view-subtitle">AI Automation for Businesses</p>
-          <p class="info-hero__lead" id="info-view-lead"></p>
-          <div class="info-hero__paragraphs" id="info-view-paragraphs"></div>
-        </section>
-
-        <!-- 02. Qualification & Capabilities (2 columns) -->
-        <section class="info-section info-section--grid">
-          <div class="info-col">
-            <span class="info-section__num">[ 02 // QUALIFICATION &amp; BACKGROUND ]</span>
-            <h2 class="info-col__heading">Where I Come From</h2>
-            <dl class="info-qual-list" id="info-view-qualifications"></dl>
+      <!-- ======== 4. Background & Credentials Section ======== -->
+      <section class="section" id="background">
+        <div class="container">
+          <div class="section-header section-header--split">
+            <div>
+              <span class="section-eyebrow" id="bg-eyebrow">Background &amp; Credentials</span>
+              <h2 class="section-title" id="bg-title">Education, Experience, and Certifications</h2>
+              <p class="section-subtitle" id="bg-subtitle"></p>
+            </div>
+            <a
+              class="btn btn--outline"
+              id="bg-cv-cta"
+              href="assets/Zyad-Waled-Talat-CV.pdf"
+              download="Zyad-Waled-Talat-CV.pdf"
+            >
+              <span aria-hidden="true">📄</span>
+              <span id="bg-cv-cta-text">Download Full CV (PDF)</span>
+            </a>
           </div>
 
-          <div class="info-col">
-            <span class="info-section__num">[ 03 // WHAT I BUILD ]</span>
-            <h2 class="info-col__heading">How I Help Businesses</h2>
-            <div class="info-skill-list" id="info-view-skills"></div>
-            <div class="info-tools-wrap">
-              <span class="info-tools__label">Tools behind the scenes</span>
-              <div class="info-tools__chips" id="info-view-tools"></div>
+          <div class="credentials-grid">
+            <!-- Education -->
+            <div class="cred-block">
+              <h3 class="cred-block__title" id="edu-heading">Education</h3>
+              <div id="edu-content"></div>
+            </div>
+
+            <!-- Professional Experience -->
+            <div class="cred-block">
+              <h3 class="cred-block__title" id="exp-heading">Professional Experience</h3>
+              <div id="exp-content"></div>
+            </div>
+
+            <!-- Courses & Certifications -->
+            <div class="cred-block cred-block--full">
+              <h3 class="cred-block__title" id="courses-heading">Courses &amp; Certifications</h3>
+              <div class="courses-grid" id="courses-content"></div>
+            </div>
+
+            <!-- Technical & Soft Skills -->
+            <div class="cred-block cred-block--full">
+              <h3 class="cred-block__title" id="skills-heading">Skills &amp; Tools</h3>
+              <div class="skills-group">
+                <span class="skills-group__label" id="tech-skills-label">Technical Skills</span>
+                <div class="skills-chips" id="tech-skills-chips"></div>
+              </div>
+              <div class="skills-group">
+                <span class="skills-group__label" id="soft-skills-label">Professional &amp; Soft Skills</span>
+                <div class="skills-chips" id="soft-skills-chips"></div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- 03. Reserved Digital Twin placeholder block -->
-        <section class="info-section info-section--twin">
-          <div class="info-twin-card">
-            <div class="info-twin-card__left">
-              <span class="info-section__num">[ 04 // DIGITAL TWIN · RESERVED ]</span>
-              <h2 class="info-twin-card__title" id="info-twin-title">Digital Twin — AI Assistant</h2>
-              <p class="info-twin-card__desc" id="info-twin-desc"></p>
-            </div>
-            <div class="info-twin-card__right">
-              <span class="info-twin-card__badge" id="info-twin-badge">[ ◉ CHATBOT COMING SOON ]</span>
-            </div>
-          </div>
-        </section>
+      <!-- ======== 5. Contact Section ======== -->
+      <section class="section section--alt" id="contact">
+        <div class="container">
+          <div class="contact-card">
+            <span class="section-eyebrow" id="contact-eyebrow">Contact Me</span>
+            <h2 class="section-title" id="contact-title">Let’s Discuss How to Improve Your Workflow</h2>
+            <p class="section-subtitle" id="contact-lead"></p>
 
-        <!-- 04. Contact & Elsewhere (2 columns matching goodgrowth mood) -->
-        <section class="info-section info-section--contact" id="info-contact-section">
-          <div class="info-col">
-            <span class="info-section__num">[ 05 // CONTACT ]</span>
-            <h2 class="info-contact__heading" id="info-contact-heading">Let’s Automate Your Busywork</h2>
-            <p class="info-contact__pitch" id="info-contact-pitch"></p>
-            <div class="info-contact__actions">
-              <a class="btn-project-cta" id="info-contact-mailto" href="mailto:hello@example.com">
-                Send an email →
+            <div class="contact-actions">
+              <a class="btn btn--primary" id="contact-cta-call" href="tel:+201006889003">
+                <span aria-hidden="true">📞</span>
+                <span id="contact-cta-call-text">Call Me</span>
+                <span class="ltr-inline">(+20 100 688 9003)</span>
               </a>
-              <button class="info-copy-btn" id="info-copy-email" type="button">
-                [ Copy email ]
-              </button>
+
+              <a class="btn btn--secondary" id="contact-cta-email" href="mailto:zyadwaled780@gmail.com">
+                <span aria-hidden="true">✉️</span>
+                <span id="contact-cta-email-text">Email Me</span>
+              </a>
+
+              <a
+                class="btn btn--outline"
+                id="contact-cta-cv"
+                href="assets/Zyad-Waled-Talat-CV.pdf"
+                download="Zyad-Waled-Talat-CV.pdf"
+              >
+                <span aria-hidden="true">📄</span>
+                <span id="contact-cta-cv-text">Download CV (PDF)</span>
+              </a>
+            </div>
+
+            <div class="contact-details-grid">
+              <!-- Phone -->
+              <div class="contact-detail-box">
+                <span class="contact-detail-box__label" id="contact-label-phone">Phone</span>
+                <div class="contact-detail-box__value">
+                  <a class="contact-detail-box__link ltr-inline" href="tel:+201006889003">+201006889003</a>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="contact-detail-box">
+                <span class="contact-detail-box__label" id="contact-label-email">Email</span>
+                <div class="contact-detail-box__value">
+                  <a class="contact-detail-box__link ltr-inline" href="mailto:zyadwaled780@gmail.com">zyadwaled780@gmail.com</a>
+                </div>
+                <div>
+                  <button type="button" class="ctrl-btn" id="btn-copy-email" style="min-height: 36px; padding: 5px 12px; font-size: 0.88rem;">
+                    Copy Email
+                  </button>
+                </div>
+              </div>
+
+              <!-- Location -->
+              <div class="contact-detail-box">
+                <span class="contact-detail-box__label" id="contact-label-location">Location</span>
+                <div class="contact-detail-box__value" id="contact-value-location">6th of October City, Egypt</div>
+              </div>
+
+              <!-- LinkedIn -->
+              <div class="contact-detail-box">
+                <span class="contact-detail-box__label" id="contact-label-linkedin">LinkedIn</span>
+                <div class="contact-detail-box__value">
+                  <a
+                    class="contact-detail-box__link"
+                    id="contact-action-linkedin"
+                    href="https://linkedin.com/in/zyad-waled-4048a33a0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View LinkedIn Profile ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- GitHub -->
+              <div class="contact-detail-box">
+                <span class="contact-detail-box__label" id="contact-label-github">GitHub</span>
+                <div class="contact-detail-box__value">
+                  <a
+                    class="contact-detail-box__link"
+                    id="contact-action-github"
+                    href="https://github.com/zyadwaled780-cmd"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View GitHub Repositories ↗
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+    </main>
 
-          <div class="info-col">
-            <span class="info-section__num">[ 06 // ELSEWHERE ]</span>
-            <h2 class="info-col__heading">Direct Links</h2>
-            <ul class="info-elsewhere-list">
-              <li>
-                <a
-                  class="info-elsewhere-link"
-                  id="info-link-linkedin"
-                  href="https://linkedin.com/in/zyad-waled-4048a33a0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>LinkedIn</span>
-                  <span class="info-elsewhere-link__arrow">[ Connect ↗ ]</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  class="info-elsewhere-link"
-                  id="info-link-github"
-                  href="https://github.com/zyadwaled780-cmd"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>GitHub</span>
-                  <span class="info-elsewhere-link__arrow">[ Repositories ↗ ]</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  class="info-elsewhere-link"
-                  id="info-link-email"
-                  href="mailto:hello@example.com"
-                >
-                  <span>Email</span>
-                  <span class="info-elsewhere-link__arrow" id="info-link-email-text">hello@example.com ↗</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </section>
+    <!-- ======== Footer ======== -->
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <span id="footer-copyright">© Zyad Waled Talat · AI and Automation Specialist · 6th of October City, Egypt</span>
+        <div class="site-footer__links">
+          <a class="site-footer__link" id="footer-link-work" href="work.html">View Projects</a>
+          <a
+            class="site-footer__link"
+            id="footer-link-cv"
+            href="assets/Zyad-Waled-Talat-CV.pdf"
+            download="Zyad-Waled-Talat-CV.pdf"
+          >
+            Download CV
+          </a>
+        </div>
+      </div>
+    </footer>
 
+  </div>
+
+  <!-- =========================================================
+       Right-Docked Digital Twin Widget (Always on Right Side)
+       ========================================================= -->
+  <aside class="digital-twin-widget" id="digital-twin-widget" aria-label="Digital Twin Assistant">
+    <div
+      class="digital-twin-panel"
+      id="dt-panel"
+      role="dialog"
+      aria-labelledby="dt-panel-title"
+      hidden
+    >
+      <div class="digital-twin-panel__header">
+        <div class="digital-twin-panel__title-wrap">
+          <h3 class="digital-twin-panel__title" id="dt-panel-title">Digital Twin Assistant</h3>
+          <span class="digital-twin-panel__status" id="dt-panel-status">AI Assistant · In development</span>
+        </div>
+        <div class="digital-twin-panel__controls">
+          <button type="button" class="digital-twin-panel__btn" id="dt-minimize" aria-label="Minimize Digital Twin panel">
+            —
+          </button>
+          <button type="button" class="digital-twin-panel__btn" id="dt-close" aria-label="Close Digital Twin panel">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="digital-twin-panel__body">
+        <p class="digital-twin-panel__text" id="dt-panel-desc"></p>
+        <p class="digital-twin-panel__text" id="dt-panel-note" style="font-weight: 600; color: var(--text);"></p>
+        <div class="digital-twin-panel__actions">
+          <a class="btn btn--primary" id="dt-call-btn" href="tel:+201006889003">Call Me</a>
+          <a class="btn btn--secondary" id="dt-email-btn" href="mailto:zyadwaled780@gmail.com">Email Me</a>
+        </div>
+        <a
+          class="digital-twin-panel__repo"
+          id="dt-panel-repo"
+          href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Digital Twin repository on GitHub ↗
+        </a>
       </div>
     </div>
-  </div>
 
-  <!-- ======== Reserved Digital Twin quick button (Phase 4) ======== -->
-  <button
-    class="btn-twin-shortcut"
-    id="btn-twin-shortcut"
-    aria-label="Digital Twin AI chatbot placeholder (Coming soon)"
-  >
-    [ ◉ Digital Twin · Soon ]
-  </button>
-
-  <!-- ======== Bottom center controls: Fit workflow + Replay ======== -->
-  <div class="bottom-controls">
     <button
-      class="btn-overview"
-      id="btn-overview"
-      aria-label="Zoom out to fit the entire workflow"
+      type="button"
+      class="digital-twin-launcher"
+      id="dt-launcher"
+      aria-expanded="false"
+      aria-controls="dt-panel"
     >
-      [ ⊞ Fit workflow ]
+      <span class="digital-twin-launcher__dot" aria-hidden="true"></span>
+      <span id="dt-launcher-label">Digital Twin</span>
+      <span class="digital-twin-launcher__badge" id="dt-launcher-badge">In development</span>
     </button>
-    <button class="btn-replay" id="btn-replay" aria-label="Replay the execution sequence">
-      [ replay ]
-    </button>
-  </div>
+  </aside>
 
-  <!-- Screen-reader live region for workflow step announcements -->
-  <div class="sr-only" id="sr-announcer" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- ======== App entry ======== -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

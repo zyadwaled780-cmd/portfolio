@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark" data-lang-pending="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects &amp; Work — Zyad Waled Talat</title>
+  <meta
+    name="description"
+    content="Explore AI and automation projects built by Zyad Waled Talat, including AI Customer Support Agent, Inbox Summarizer, Digital Twin, and AI Learning App."
+  >
+
+  <!-- Early Theme & Saved Language Script (prevents flash of wrong theme or language chooser) -->
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('zw_portfolio_theme');
+        var theme = (savedTheme === 'light' || savedTheme === 'dark')
+          ? savedTheme
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        var savedLang = localStorage.getItem('zw_portfolio_lang');
+        if (savedLang === 'en' || savedLang === 'ar') {
+          document.documentElement.setAttribute('lang', savedLang);
+          document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+          document.documentElement.removeAttribute('data-lang-pending');
+          document.documentElement.setAttribute('data-lang-ready', 'true');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Google Fonts: Playfair Display & Open Sans (English) + Aref Ruqaa & Noto Naskh Arabic (Arabic) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Stylesheets (relative paths for GitHub Pages /portfolio/ compatibility) -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/canvas.css">
+
+  <!-- GSAP 3.12 for the optional interactive workflow canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body data-page="work">
+
+  <!-- =========================================================
+       First-Visit Language Selection Overlay
+       ========================================================= -->
+  <section
+    class="lang-chooser"
+    id="lang-chooser"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="chooser-title"
+  >
+    <div class="lang-chooser__topbar">
+      <button
+        type="button"
+        class="ctrl-btn"
+        id="chooser-theme-toggle"
+        aria-label="Toggle light or dark mode"
+      >
+        ☀️ Light / فاتح
+      </button>
+    </div>
+
+    <div class="lang-chooser__card">
+      <span class="lang-chooser__badge">Zyad Waled Talat · زياد وليد طلعت</span>
+      <h1 class="lang-chooser__title" id="chooser-title">Choose Your Language</h1>
+      <p class="lang-chooser__subtitle" lang="ar" dir="rtl">اختر اللغة المفضلة لتصفح الموقع</p>
+
+      <div class="lang-chooser__grid">
+        <!-- English Option -->
+        <button
+          type="button"
+          class="lang-option-btn lang-option-btn--en"
+          id="choose-en"
+          lang="en"
+          dir="ltr"
+        >
+          <div>
+            <span class="lang-option-btn__name">English</span>
+            <span class="lang-option-btn__desc">
+              See how I help businesses lower costs, improve efficiency, and automate repetitive tasks.
+            </span>
+          </div>
+          <span class="lang-option-btn__cta">Continue in English →</span>
+        </button>
+
+        <!-- Arabic Option -->
+        <button
+          type="button"
+          class="lang-option-btn lang-option-btn--ar"
+          id="choose-ar"
+          lang="ar"
+          dir="rtl"
+        >
+          <div>
+            <span class="lang-option-btn__name">العربية</span>
+            <span class="lang-option-btn__desc">
+              اكتشف كيف أساعد الشركات وأصحاب الأعمال على خفض التكاليف وأتمتة المهام المتكررة.
+            </span>
+          </div>
+          <span class="lang-option-btn__cta">المتابعة بالعربية ←</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       Main Portfolio Shell (Work & Projects Page)
+       ========================================================= -->
+  <div id="app-shell">
+
+    <!-- ======== Sticky Header & Navigation ======== -->
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand-link" href="index.html">
+          <span class="brand-link__name" id="brand-name">Zyad Waled Talat</span>
+          <span class="brand-link__role" id="brand-role">AI &amp; Automation Specialist</span>
+        </a>
+
+        <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+          <a class="site-nav__link" id="nav-link-home" href="index.html#home">Home</a>
+          <a class="site-nav__link" id="nav-link-about" href="index.html#about">About</a>
+          <a class="site-nav__link" id="nav-link-services" href="index.html#services">How I Help</a>
+          <a class="site-nav__link" id="nav-link-background" href="index.html#background">Background</a>
+          <a class="site-nav__link site-nav__link--active" id="nav-link-work" href="work.html" aria-current="page">Work</a>
+          <a class="site-nav__link" id="nav-link-contact" href="index.html#contact">Contact</a>
+        </nav>
+
+        <div class="header-controls">
+          <button
+            type="button"
+            class="ctrl-btn ctrl-btn--lang"
+            id="btn-lang-switch"
+            aria-label="Switch language to Arabic"
+          >
+            العربية
+          </button>
+
+          <button
+            type="button"
+            class="ctrl-btn"
+            id="btn-theme-toggle"
+            aria-label="Switch between light and dark mode"
+          >
+            ☀️ Light
+          </button>
+
+          <button
+            type="button"
+            class="ctrl-btn mobile-menu-btn"
+            id="btn-mobile-menu"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Toggle navigation menu"
+          >
+            <span aria-hidden="true">☰</span>
+            <span id="mobile-menu-label">Menu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ======== Work Page Header & Project Cards ======== -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header section-header--split">
+            <div>
+              <span class="section-eyebrow" id="work-eyebrow">Projects &amp; Case Studies</span>
+              <h1 class="section-title" id="main-heading">Selected Work &amp; Practical Automations</h1>
+              <p class="section-subtitle" id="work-lead"></p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+              <a class="btn btn--outline" id="work-back-home-cta" href="index.html">
+                ← Back to Homepage
+              </a>
+              <a class="btn btn--primary" id="work-contact-cta" href="index.html#contact">
+                Discuss a Similar Project
+              </a>
+            </div>
+          </div>
+
+          <!-- Readable Project Cards Grid -->
+          <div class="projects-showcase-grid" id="projects-showcase-grid"></div>
+        </div>
+      </section>
+
+      <!-- ======== Optional Interactive Automation Workflow Canvas ======== -->
+      <section class="section section--alt">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title" id="canvas-section-title">Optional: Interactive Automation Workflow View</h2>
+            <p class="section-subtitle" id="canvas-section-desc"></p>
+          </div>
+
+          <div class="workflow-embed-box">
+            <div class="viewport" id="viewport">
+              <div class="dither-overlay" id="dither-overlay"></div>
+              <div class="world" id="world">
+                <svg class="connections-svg" id="connections-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+              </div>
+            </div>
+
+            <div class="canvas-hud-bar">
+              <div class="canvas-hud-group">
+                <button type="button" class="canvas-hud-btn" id="btn-prev" aria-label="Previous workflow node">
+                  ← Prev
+                </button>
+                <span class="canvas-progress-pill" id="progress-indicator" aria-live="polite">01 / 01</span>
+                <button type="button" class="canvas-hud-btn" id="btn-next" aria-label="Next workflow node">
+                  Next →
+                </button>
+              </div>
+              <div class="canvas-hud-group">
+                <button type="button" class="canvas-hud-btn" id="btn-overview" aria-label="Zoom out to fit workflow">
+                  [ ⊞ Fit workflow ]
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" id="sr-announcer" aria-live="polite" aria-atomic="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======== Footer ======== -->
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <span id="footer-copyright">© Zyad Waled Talat · AI and Automation Specialist · 6th of October City, Egypt</span>
+        <div class="site-footer__links">
+          <a class="site-footer__link" id="footer-link-home" href="index.html">Home</a>
+          <a
+            class="site-footer__link"
+            id="footer-link-cv"
+            href="assets/Zyad-Waled-Talat-CV.pdf"
+            download="Zyad-Waled-Talat-CV.pdf"
+          >
+            Download CV
+          </a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- =========================================================
+       Right-Docked Digital Twin Widget (Always on Right Side)
+       ========================================================= -->
+  <aside class="digital-twin-widget" id="digital-twin-widget" aria-label="Digital Twin Assistant">
+    <div
+      class="digital-twin-panel"
+      id="dt-panel"
+      role="dialog"
+      aria-labelledby="dt-panel-title"
+      hidden
+    >
+      <div class="digital-twin-panel__header">
+        <div class="digital-twin-panel__title-wrap">
+          <h3 class="digital-twin-panel__title" id="dt-panel-title">Digital Twin Assistant</h3>
+          <span class="digital-twin-panel__status" id="dt-panel-status">AI Assistant · In development</span>
+        </div>
+        <div class="digital-twin-panel__controls">
+          <button type="button" class="digital-twin-panel__btn" id="dt-minimize" aria-label="Minimize Digital Twin panel">
+            —
+          </button>
+          <button type="button" class="digital-twin-panel__btn" id="dt-close" aria-label="Close Digital Twin panel">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="digital-twin-panel__body">
+        <p class="digital-twin-panel__text" id="dt-panel-desc"></p>
+        <p class="digital-twin-panel__text" id="dt-panel-note" style="font-weight: 600; color: var(--text);"></p>
+        <div class="digital-twin-panel__actions">
+          <a class="btn btn--primary" id="dt-call-btn" href="tel:+201006889003">Call Me</a>
+          <a class="btn btn--secondary" id="dt-email-btn" href="mailto:zyadwaled780@gmail.com">Email Me</a>
+        </div>
+        <a
+          class="digital-twin-panel__repo"
+          id="dt-panel-repo"
+          href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Digital Twin repository on GitHub ↗
+        </a>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="digital-twin-launcher"
+      id="dt-launcher"
+      aria-expanded="false"
+      aria-controls="dt-panel"
+    >
+      <span class="digital-twin-launcher__dot" aria-hidden="true"></span>
+      <span id="dt-launcher-label">Digital Twin</span>
+      <span class="digital-twin-launcher__badge" id="dt-launcher-badge">In development</span>
+    </button>
+  </aside>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
