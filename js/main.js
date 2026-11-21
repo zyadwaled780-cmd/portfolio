@@ -627,6 +627,20 @@ function initOptionalWorkflowCanvas() {
 
     setNodes(allRefs);
 
+    // Animate running counter 000 -> 100
+    const counterEl = triggerNode.querySelector('.node__counter');
+    if (counterEl) {
+      const counterObj = { val: 0 };
+      gsap.to(counterObj, {
+        val: 100,
+        duration: 0.55,
+        ease: 'power1.inOut',
+        onUpdate: () => {
+          counterEl.textContent = String(Math.round(counterObj.val)).padStart(3, '0');
+        },
+      });
+    }
+
     setTimeout(() => {
       setNodeState(triggerNode, 'success');
       play('chime');
@@ -654,11 +668,11 @@ function initOptionalWorkflowCanvas() {
 
       setNavEnabled(true);
       goTo(1, true);
-    }, 450);
+    }, 600);
   }
 
   world.addEventListener('click', e => {
-    if (e.target.closest('#btn-execute')) {
+    if (e.target.closest('.btn-execute')) {
       runCanvasWorkflow();
       return;
     }
@@ -669,12 +683,26 @@ function initOptionalWorkflowCanvas() {
       if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (e.target.closest('#btn-lets-talk') || e.target.closest('#btn-more-about')) {
+    if (e.target.closest('.btn-more-about')) {
+      window.location.href = 'index.html#about';
+      return;
+    }
+    if (e.target.closest('.btn-contact')) {
       window.location.href = 'index.html#contact';
       return;
     }
-    if (e.target.closest('#btn-digital-twin-node')) {
+    if (e.target.closest('.btn-digital-twin')) {
       setTwinPanelOpen(true);
+      return;
+    }
+    // Clicking any node card focuses the camera on that node
+    const clickedNode = e.target.closest('.node');
+    if (clickedNode && workflowBuilt) {
+      const allNodes = Array.from(world.querySelectorAll('.node'));
+      const idx = allNodes.indexOf(clickedNode);
+      if (idx >= 0) {
+        goTo(idx, true);
+      }
     }
   });
 
