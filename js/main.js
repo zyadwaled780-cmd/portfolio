@@ -243,6 +243,7 @@ function renderHomePage(data) {
   setText('hero-supporting', hero.supporting);
 
   setText('hero-cta-call-text', hero.ctaCall);
+  setText('hero-cta-whatsapp-text', hero.ctaWhatsapp);
   setText('hero-cta-email-text', hero.ctaEmail);
   setText('hero-cta-cv-text', hero.ctaCv);
   setText('hero-cta-work', hero.ctaWork);
@@ -390,10 +391,13 @@ function renderHomePage(data) {
   setText('contact-title', contact.title);
   setText('contact-lead', contact.lead);
   setText('contact-cta-call-text', contact.callCta);
+  setText('contact-cta-whatsapp-text', contact.whatsappCta);
   setText('contact-cta-email-text', contact.emailCta);
   setText('contact-cta-cv-text', contact.cvCta);
 
   setText('contact-label-phone', contact.phoneLabel);
+  setText('contact-label-whatsapp', contact.whatsappLabel);
+  setText('contact-action-whatsapp', contact.whatsappAction);
   setText('contact-label-email', contact.emailLabel);
   setText('contact-label-location', contact.locationLabel);
   setText('contact-value-location', contact.locationValue);
@@ -496,6 +500,7 @@ function renderDigitalTwin(data) {
   setText('dt-panel-note', digitalTwin.note);
   setText('dt-panel-repo', digitalTwin.repoLabel);
   setText('dt-call-btn', contact.callCta);
+  setText('dt-whatsapp-btn', contact.whatsappCta);
   setText('dt-email-btn', contact.emailCta);
 
   const launcherBtn = document.getElementById('dt-launcher');
