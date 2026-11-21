@@ -16,6 +16,8 @@ export const CONTACT_INFO = {
   github: 'https://github.com/zyadwaled780-cmd',
   cvPath: 'assets/Zyad-Waled-Talat-CV.pdf',
   cvFilename: 'Zyad-Waled-Talat-CV.pdf',
+  cvWordPath: 'assets/Zyad-Waled-Talat-CV.docx',
+  cvWordFilename: 'Zyad-Waled-Talat-CV.docx',
   digitalTwinRepo: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
 };
 
@@ -69,6 +71,7 @@ export const SITE_CONTENT = {
       ctaWhatsapp: 'WhatsApp Me',
       ctaEmail: 'Email Me',
       ctaCv: 'Download CV (PDF)',
+      ctaCvWord: 'Download CV (Word)',
       ctaWork: 'View My Work →',
       quickFacts: [
         {
@@ -151,7 +154,8 @@ export const SITE_CONTENT = {
       title: 'Education, Experience, and Certifications',
       subtitle:
         'Verified factual background from my curriculum vitae.',
-      cvCta: 'Download Full CV (PDF)',
+      cvCta: 'Download CV (PDF)',
+      cvWordCta: 'Download CV (Word)',
       educationTitle: 'Education',
       education: {
         degree: 'Bachelor of Business Information Systems (BIS)',
@@ -233,6 +237,7 @@ export const SITE_CONTENT = {
       whatsappCta: 'WhatsApp Me',
       emailCta: 'Email Me',
       cvCta: 'Download CV (PDF)',
+      cvWordCta: 'Download CV (Word)',
       phoneLabel: 'Phone',
       whatsappLabel: 'WhatsApp',
       whatsappAction: 'Chat on WhatsApp ↗',
@@ -349,7 +354,8 @@ export const SITE_CONTENT = {
       copyright: '© Zyad Waled Talat · AI and Automation Specialist · 6th of October City, Egypt',
       workLink: 'View Projects',
       homeLink: 'Home',
-      cvLink: 'Download CV',
+      cvLink: 'Download CV (PDF)',
+      cvWordLink: 'Download CV (Word)',
     },
   },
 
@@ -402,6 +408,7 @@ export const SITE_CONTENT = {
       ctaWhatsapp: 'تواصل عبر واتساب',
       ctaEmail: 'راسلني عبر البريد',
       ctaCv: 'تحميل السيرة الذاتية (PDF)',
+      ctaCvWord: 'تحميل السيرة الذاتية (Word)',
       ctaWork: 'تصفح أعمالي ←',
       quickFacts: [
         {
@@ -484,7 +491,8 @@ export const SITE_CONTENT = {
       title: 'التعليم، والخبرة المهنية، والشهادات المعتمدة',
       subtitle:
         'بيانات موثقة مطابقة للسيرة الذاتية الرسمية.',
-      cvCta: 'تحميل السيرة الذاتية الكاملة (PDF)',
+      cvCta: 'تحميل السيرة الذاتية (PDF)',
+      cvWordCta: 'تحميل السيرة الذاتية (Word)',
       educationTitle: 'التعليم الجامعي',
       education: {
         degree: 'بكالوريوس نظم معلومات الأعمال — BIS',
@@ -566,6 +574,7 @@ export const SITE_CONTENT = {
       whatsappCta: 'تواصل عبر واتساب',
       emailCta: 'راسلني عبر البريد',
       cvCta: 'تحميل السيرة الذاتية (PDF)',
+      cvWordCta: 'تحميل السيرة الذاتية (Word)',
       phoneLabel: 'رقم الهاتف',
       whatsappLabel: 'واتساب (WhatsApp)',
       whatsappAction: 'بدء محادثة عبر واتساب ↗',
@@ -682,7 +691,8 @@ export const SITE_CONTENT = {
       copyright: '© زياد وليد طلعت · أخصائي الذكاء الاصطناعي والأتمتة · مدينة 6 أكتوبر، مصر',
       workLink: 'تصفح المشاريع',
       homeLink: 'الرئيسية',
-      cvLink: 'تحميل السيرة الذاتية',
+      cvLink: 'تحميل السيرة الذاتية (PDF)',
+      cvWordLink: 'تحميل السيرة الذاتية (Word)',
     },
   },
 };

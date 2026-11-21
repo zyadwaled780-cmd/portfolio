@@ -246,6 +246,7 @@ function renderHomePage(data) {
   setText('hero-cta-whatsapp-text', hero.ctaWhatsapp);
   setText('hero-cta-email-text', hero.ctaEmail);
   setText('hero-cta-cv-text', hero.ctaCv);
+  setText('hero-cta-cv-word-text', hero.ctaCvWord);
   setText('hero-cta-work', hero.ctaWork);
 
   const factsEl = document.getElementById('hero-facts');
@@ -318,6 +319,7 @@ function renderHomePage(data) {
   setText('bg-title', background.title);
   setText('bg-subtitle', background.subtitle);
   setText('bg-cv-cta-text', background.cvCta);
+  setText('bg-cv-word-cta-text', background.cvWordCta);
 
   setText('edu-heading', background.educationTitle);
   const eduEl = document.getElementById('edu-content');
@@ -394,6 +396,7 @@ function renderHomePage(data) {
   setText('contact-cta-whatsapp-text', contact.whatsappCta);
   setText('contact-cta-email-text', contact.emailCta);
   setText('contact-cta-cv-text', contact.cvCta);
+  setText('contact-cta-cv-word-text', contact.cvWordCta);
 
   setText('contact-label-phone', contact.phoneLabel);
   setText('contact-label-whatsapp', contact.whatsappLabel);
@@ -483,6 +486,7 @@ function renderFooter(data) {
   setText('footer-link-work', footer.workLink);
   setText('footer-link-home', footer.homeLink);
   setText('footer-link-cv', footer.cvLink);
+  setText('footer-link-cv-word', footer.cvWordLink);
 }
 
 /* ================================================
