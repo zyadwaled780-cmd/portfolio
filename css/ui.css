@@ -68,7 +68,7 @@
 }
 
 .lang-chooser__subtitle {
-  font-family: 'Aref Ruqaa', 'Noto Naskh Arabic', serif;
+  font-family: 'Noto Naskh Arabic', 'Amiri', 'Traditional Arabic', serif;
   font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   color: var(--text-secondary);
   margin-bottom: 32px;
@@ -127,7 +127,7 @@
 }
 
 .lang-option-btn--ar .lang-option-btn__name {
-  font-family: 'Aref Ruqaa', serif;
+  font-family: 'Noto Naskh Arabic', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.85rem;
   line-height: 1.4;
 }

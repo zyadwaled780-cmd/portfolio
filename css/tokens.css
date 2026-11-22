@@ -91,9 +91,8 @@ html[lang="en"] {
 }
 
 html[lang="ar"] {
-  /* Genuine Ruqʿah font (خط الرقعة) for prominent headings */
-  --font-display: 'Aref Ruqaa', 'Ruqaa', 'Amiri', serif;
-  /* Genuine Naskh font (خط النسخ) for body, nav, buttons, and labels */
+  /* Genuine Naskh font (خط النسخ) for all headings, body, nav, buttons, and labels */
+  --font-display: 'Noto Naskh Arabic', 'Amiri', 'Traditional Arabic', serif;
   --font-body:    'Noto Naskh Arabic', 'Amiri', 'Traditional Arabic', serif;
   --font-ui:      var(--font-body);
   --font-mono:    var(--font-body);
