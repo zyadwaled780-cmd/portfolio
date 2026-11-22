@@ -60,7 +60,7 @@ export const SITE_CONTENT = {
       menuAria: 'Toggle navigation menu',
     },
     hero: {
-      locationBadge: 'AI and Automation Specialist · 6th of October City, Egypt',
+      locationBadge: 'AI and Automation Specialist',
       name: 'Zyad Waled Talat',
       headline: 'Help Your Business Lower Costs and Stop Losing Hours to Repetitive Work',
       objective:
@@ -397,7 +397,7 @@ export const SITE_CONTENT = {
       menuAria: 'فتح أو إغلاق قائمة التنقل',
     },
     hero: {
-      locationBadge: 'أخصائي الذكاء الاصطناعي والأتمتة · مدينة 6 أكتوبر، مصر',
+      locationBadge: 'أخصائي الذكاء الاصطناعي والأتمتة',
       name: 'زياد وليد طلعت',
       headline: 'اخفض تكاليف أعمالك وتوقف عن إهدار الساعات في المهام المتكررة',
       objective:
