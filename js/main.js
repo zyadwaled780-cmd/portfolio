@@ -13,7 +13,12 @@
  *   - Right-docked Digital Twin widget ("In development" / "قيد التطوير")
  */
 
-import { SITE_CONTENT, CONTACT_INFO, content as legacyWorkflowContent } from './content.js';
+import {
+  SITE_CONTENT,
+  CONTACT_INFO,
+  DIGITAL_TWIN_CONFIG,
+  content as legacyWorkflowContent,
+} from './content.js';
 import { initCamera, cameraTo, cameraSet } from './camera.js';
 import { initAudio, play } from './audio.js';
 import {
@@ -51,6 +56,25 @@ let currentLang = 'en';
 let currentTheme = 'dark';
 let isMobileMenuOpen = false;
 let isTwinPanelOpen = false;
+let twinIframeMounted = false;
+let twinLoadTimer = null;
+
+function getVerifiedTwinUrl() {
+  const raw = String(DIGITAL_TWIN_CONFIG?.liveUrl || '').trim();
+  if (!raw || raw.includes('YOUR-SERVICE-NAME')) return '';
+  if (!/^https?:\/\//i.test(raw)) return '';
+  return raw;
+}
+
+function getThemedTwinUrl(baseUrl) {
+  try {
+    const u = new URL(baseUrl);
+    u.searchParams.set('__theme', currentTheme === 'light' ? 'light' : 'dark');
+    return u.toString();
+  } catch (_) {
+    return baseUrl;
+  }
+}
 
 /* ================================================
    1. Theme Management (Light & Dark)
@@ -314,6 +338,57 @@ function renderHomePage(data) {
   setText('work-banner-desc', services.workBannerDesc);
   setText('work-banner-cta', services.workBannerCta);
 
+  // --- Featured AI Digital Twin Spotlight ---
+  const { featuredTwin } = data;
+  if (featuredTwin) {
+    const liveUrl = getVerifiedTwinUrl();
+    setText('home-twin-eyebrow', featuredTwin.eyebrow);
+    setText('home-twin-title', featuredTwin.title);
+    setText('home-twin-desc', featuredTwin.description);
+    setText('home-twin-stack-label', data.workPage?.toolsLabel || 'Tools Used');
+
+    const statusBadge = document.getElementById('home-twin-status');
+    if (statusBadge) {
+      statusBadge.className = `project-status-badge ${
+        liveUrl ? 'project-status-badge--complete' : 'project-status-badge--dev'
+      }`;
+      statusBadge.textContent = `● ${liveUrl ? data.digitalTwin.statusBadgeLive : featuredTwin.comingSoonLabel}`;
+    }
+
+    const highlightsEl = document.getElementById('home-twin-highlights');
+    if (highlightsEl && Array.isArray(featuredTwin.highlights)) {
+      highlightsEl.innerHTML = featuredTwin.highlights.map(item => `<li>${item}</li>`).join('');
+    }
+
+    const stackEl = document.getElementById('home-twin-stack');
+    if (stackEl && Array.isArray(featuredTwin.stack)) {
+      stackEl.innerHTML = featuredTwin.stack
+        .map(t => `<span class="skill-chip"><span class="ltr-inline">${t}</span></span>`)
+        .join('');
+    }
+
+    const actionsEl = document.getElementById('home-twin-actions');
+    if (actionsEl) {
+      const repoUrl = DIGITAL_TWIN_CONFIG.repoUrl || CONTACT_INFO.digitalTwinRepo;
+      let primaryHtml = `<span class="demo-status-pill" id="home-twin-coming-soon">${featuredTwin.comingSoonLabel}</span>`;
+      if (liveUrl) {
+        if (DIGITAL_TWIN_CONFIG.embedEnabled) {
+          primaryHtml = `
+            <button type="button" class="btn btn--primary" data-open-twin-chat>${featuredTwin.chatCtaLabel}</button>
+            <a class="btn btn--secondary" href="${liveUrl}" target="_blank" rel="noopener noreferrer">${featuredTwin.openNewTabLabel}</a>
+          `;
+        } else {
+          primaryHtml = `<a class="btn btn--primary" href="${liveUrl}" target="_blank" rel="noopener noreferrer">${featuredTwin.chatCtaLabel} ↗</a>`;
+        }
+      }
+      actionsEl.innerHTML = `
+        ${primaryHtml}
+        <a class="btn btn--outline" id="home-twin-view-code" href="${repoUrl}" target="_blank" rel="noopener noreferrer">${featuredTwin.viewCodeLabel}</a>
+      `;
+    }
+    setText('home-twin-note', liveUrl ? '' : featuredTwin.comingSoonNote);
+  }
+
   // --- 4. Background & Credentials ---
   setText('bg-eyebrow', background.eyebrow);
   setText('bg-title', background.title);
@@ -424,22 +499,59 @@ function renderWorkPage(data) {
 
   const gridEl = document.getElementById('projects-showcase-grid');
   if (gridEl) {
+    const liveUrl = getVerifiedTwinUrl();
     gridEl.innerHTML = workPage.projects
       .map(proj => {
-        const isComplete = proj.status === 'complete';
+        const isFeaturedTwin = !!proj.featured;
+        const isLiveTwin = isFeaturedTwin && !!liveUrl;
+        const isComplete = proj.status === 'complete' || isLiveTwin;
         const statusClass = isComplete
           ? 'project-status-badge--complete'
           : 'project-status-badge--dev';
-        const statusText = isComplete ? workPage.statusComplete : workPage.statusInDev;
+        const statusText = isFeaturedTwin
+          ? (isLiveTwin ? data.digitalTwin.statusBadgeLive : workPage.liveDemoSoon)
+          : (isComplete ? workPage.statusComplete : workPage.statusInDev);
         const chipsHtml = proj.stack
           .map(t => `<span class="skill-chip"><span class="ltr-inline">${t}</span></span>`)
           .join('');
+        const repoLabel = isFeaturedTwin ? workPage.viewCodeLabel : workPage.repoLinkLabel;
+
+        let actionsHtml = '';
+        if (isFeaturedTwin) {
+          if (liveUrl) {
+            if (DIGITAL_TWIN_CONFIG.embedEnabled) {
+              actionsHtml = `
+                <button type="button" class="btn btn--primary" data-open-twin-chat>${workPage.chatCtaLabel}</button>
+                <a class="btn btn--secondary" href="${liveUrl}" target="_blank" rel="noopener noreferrer">${workPage.openNewTabLabel}</a>
+              `;
+            } else {
+              actionsHtml = `<a class="btn btn--primary" href="${liveUrl}" target="_blank" rel="noopener noreferrer">${workPage.chatCtaLabel} ↗</a>`;
+            }
+          } else {
+            actionsHtml = `<span class="demo-status-pill">${workPage.liveDemoSoon}</span>`;
+          }
+          if (proj.repoUrl) {
+            actionsHtml += `<a class="btn btn--outline" href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer">${repoLabel}</a>`;
+          }
+        } else {
+          actionsHtml = `
+            <a class="btn btn--primary" href="index.html#contact">${workPage.contactCta}</a>
+            ${
+              proj.repoUrl
+                ? `<a class="btn btn--outline" href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer">${repoLabel}</a>`
+                : ''
+            }
+          `;
+        }
 
         return `
-          <article class="project-showcase-card" id="project-${proj.id}">
+          <article class="project-showcase-card ${isFeaturedTwin ? 'project-showcase-card--featured' : ''}" id="project-${proj.id}">
             <div class="project-showcase-card__top">
               <div class="project-showcase-card__meta">
-                <span class="project-status-badge ${statusClass}">● ${statusText}</span>
+                <div class="project-badge-group">
+                  ${isFeaturedTwin ? `<span class="featured-project-badge">★ ${workPage.featuredBadge}</span>` : ''}
+                  <span class="project-status-badge ${statusClass}">● ${statusText}</span>
+                </div>
               </div>
               <h2 class="project-showcase-card__title">${proj.title}</h2>
 
@@ -464,14 +576,7 @@ function renderWorkPage(data) {
                 <span class="project-field__label">${workPage.toolsLabel}</span>
                 <div class="skills-chips" style="margin-top: 8px;">${chipsHtml}</div>
               </div>
-              <div class="project-showcase-card__actions">
-                <a class="btn btn--primary" href="index.html#contact">${workPage.contactCta}</a>
-                ${
-                  proj.repoUrl
-                    ? `<a class="btn btn--outline" href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer">${workPage.repoLinkLabel}</a>`
-                    : ''
-                }
-              </div>
+              <div class="project-showcase-card__actions">${actionsHtml}</div>
             </div>
           </article>
         `;
@@ -493,23 +598,112 @@ function renderFooter(data) {
    4. Right-Docked Digital Twin Widget
    ================================================ */
 
+function mountTwinIframeIfNeeded() {
+  const liveUrl = getVerifiedTwinUrl();
+  if (!liveUrl || !DIGITAL_TWIN_CONFIG.embedEnabled || twinIframeMounted) return;
+
+  const host = document.getElementById('dt-iframe-host');
+  const loadingEl = document.getElementById('dt-embed-loading');
+  const slowHintEl = document.getElementById('dt-slow-hint');
+  const loadingOpenTabEl = document.getElementById('dt-loading-open-tab');
+  if (!host) return;
+
+  const dict = SITE_CONTENT[currentLang]?.digitalTwin || SITE_CONTENT.en.digitalTwin;
+  const iframe = document.createElement('iframe');
+  iframe.id = 'digital-twin-frame';
+  iframe.className = 'dt-embed-iframe';
+  iframe.src = getThemedTwinUrl(liveUrl);
+  iframe.title = dict.iframeTitle;
+  iframe.loading = 'lazy';
+  iframe.setAttribute('allow', 'clipboard-write');
+  iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+
+  if (loadingEl) loadingEl.removeAttribute('hidden');
+  if (slowHintEl) slowHintEl.setAttribute('hidden', '');
+  if (loadingOpenTabEl) {
+    loadingOpenTabEl.href = liveUrl;
+    loadingOpenTabEl.setAttribute('hidden', '');
+  }
+
+  clearTimeout(twinLoadTimer);
+  twinLoadTimer = setTimeout(() => {
+    if (slowHintEl) slowHintEl.removeAttribute('hidden');
+    if (loadingOpenTabEl) loadingOpenTabEl.removeAttribute('hidden');
+  }, 15000);
+
+  iframe.addEventListener('load', () => {
+    clearTimeout(twinLoadTimer);
+    if (loadingEl) loadingEl.setAttribute('hidden', '');
+  });
+
+  host.replaceChildren(iframe);
+  twinIframeMounted = true;
+}
+
 function renderDigitalTwin(data) {
   const { digitalTwin, contact } = data;
+  const liveUrl = getVerifiedTwinUrl();
+  const canEmbed = !!liveUrl && !!DIGITAL_TWIN_CONFIG.embedEnabled;
+  const repoUrl = DIGITAL_TWIN_CONFIG.repoUrl || CONTACT_INFO.digitalTwinRepo;
 
   setText('dt-launcher-label', digitalTwin.launcherLabel);
-  setText('dt-launcher-badge', digitalTwin.statusBadge);
+  setText('dt-launcher-badge', liveUrl ? digitalTwin.statusBadgeLive : digitalTwin.statusBadgeSoon);
   setText('dt-panel-title', digitalTwin.panelTitle);
-  setText('dt-panel-status', digitalTwin.panelSubtitle);
-  setText('dt-panel-desc', digitalTwin.description);
-  setText('dt-panel-note', digitalTwin.note);
-  setText('dt-panel-repo', digitalTwin.repoLabel);
+  setText('dt-panel-status', liveUrl ? digitalTwin.panelSubtitleLive : digitalTwin.panelSubtitleSoon);
+  setText('dt-panel-desc', liveUrl ? digitalTwin.descriptionDirect : digitalTwin.descriptionSoon);
+  setText('dt-panel-note', digitalTwin.noteSoon);
+  setText('dt-loading-text', digitalTwin.loadingText);
+  setText('dt-slow-hint', digitalTwin.slowLoadHint);
+  setText('dt-loading-open-tab', digitalTwin.openNewTabLabel);
+  setText('dt-open-tab', digitalTwin.openNewTabLabel);
+  setText('dt-embed-repo', digitalTwin.viewCodeLabel);
+  setText('dt-panel-repo', digitalTwin.viewCodeLabel);
   setText('dt-call-btn', contact.callCta);
   setText('dt-whatsapp-btn', contact.whatsappCta);
   setText('dt-email-btn', contact.emailCta);
+  setText('dt-direct-live-btn', `${digitalTwin.chatCtaLabel} ↗`);
+
+  const panel = document.getElementById('dt-panel');
+  const embedWrap = document.getElementById('dt-embed-wrap');
+  const fallbackBody = document.getElementById('dt-fallback-body');
+  const directLiveWrap = document.getElementById('dt-direct-live-wrap');
+  const directLiveBtn = document.getElementById('dt-direct-live-btn');
+  const openTabEl = document.getElementById('dt-open-tab');
+  const loadingOpenTabEl = document.getElementById('dt-loading-open-tab');
+  const embedRepoEl = document.getElementById('dt-embed-repo');
+  const panelRepoEl = document.getElementById('dt-panel-repo');
+  const launcherDot = document.querySelector('.digital-twin-launcher__dot');
+  const iframe = document.getElementById('digital-twin-frame');
+
+  if (panel) panel.classList.toggle('digital-twin-panel--live', canEmbed);
+  if (embedRepoEl) embedRepoEl.href = repoUrl;
+  if (panelRepoEl) panelRepoEl.href = repoUrl;
+  if (launcherDot) {
+    launcherDot.style.background = liveUrl ? 'var(--success-text)' : 'var(--warning-text)';
+  }
+
+  if (canEmbed) {
+    if (embedWrap) embedWrap.removeAttribute('hidden');
+    if (fallbackBody) fallbackBody.setAttribute('hidden', '');
+    if (openTabEl) openTabEl.href = liveUrl;
+    if (loadingOpenTabEl) loadingOpenTabEl.href = liveUrl;
+    if (iframe) iframe.title = digitalTwin.iframeTitle;
+  } else {
+    if (embedWrap) embedWrap.setAttribute('hidden', '');
+    if (fallbackBody) fallbackBody.removeAttribute('hidden');
+    if (directLiveWrap && directLiveBtn) {
+      if (liveUrl) {
+        directLiveBtn.href = liveUrl;
+        directLiveWrap.removeAttribute('hidden');
+      } else {
+        directLiveWrap.setAttribute('hidden', '');
+      }
+    }
+  }
 
   const launcherBtn = document.getElementById('dt-launcher');
   if (launcherBtn) {
-    launcherBtn.setAttribute('aria-label', digitalTwin.openAria);
+    launcherBtn.setAttribute('aria-label', liveUrl ? digitalTwin.openAriaLive : digitalTwin.openAriaSoon);
   }
   const minBtn = document.getElementById('dt-minimize');
   if (minBtn) {
@@ -528,6 +722,7 @@ function setTwinPanelOpen(open, restoreFocus = false) {
   if (!panel || !launcher) return;
 
   if (isTwinPanelOpen) {
+    mountTwinIframeIfNeeded();
     panel.removeAttribute('hidden');
     launcher.setAttribute('aria-expanded', 'true');
     const closeBtn = document.getElementById('dt-close');
@@ -779,9 +974,14 @@ function initEvents() {
     });
   }
 
-  // Digital Twin launcher, minimize, and close controls
+  // Digital Twin launcher, minimize, close, and inline "Chat with My Digital Twin" triggers
   document.getElementById('dt-launcher')?.addEventListener('click', () => {
     setTwinPanelOpen(!isTwinPanelOpen);
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-open-twin-chat]')) {
+      setTwinPanelOpen(true);
+    }
   });
   document.getElementById('dt-minimize')?.addEventListener('click', () => {
     setTwinPanelOpen(false, true);

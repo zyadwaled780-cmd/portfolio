@@ -21,6 +21,18 @@ export const CONTACT_INFO = {
   digitalTwinRepo: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
 };
 
+/**
+ * Single-point Digital Twin deployment configuration.
+ * Keep secrets (API keys/tokens) in backend hosting env vars only — never in frontend code.
+ * Set `liveUrl` to your verified public URL (for example 'https://your-service.onrender.com')
+ * once deployed and tested; leave empty until then so no unverified demo link is shown.
+ */
+export const DIGITAL_TWIN_CONFIG = {
+  repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
+  liveUrl: '',
+  embedEnabled: true,
+};
+
 export const SITE_CONTENT = {
   en: {
     meta: {
@@ -149,6 +161,24 @@ export const SITE_CONTENT = {
         'Explore my completed projects and optional interactive workflow showcase on a dedicated page.',
       workBannerCta: 'View Projects →',
     },
+    featuredTwin: {
+      eyebrow: 'Featured Project',
+      title: 'AI Digital Twin',
+      description:
+        'A conversational AI experience that lets visitors learn about my background, skills, and projects — powered by strict CV-only retrieval (RAG), bilingual English & Egyptian Arabic support, and Telegram notification forwarding.',
+      highlights: [
+        'Grounded answers sourced strictly from verified CV data',
+        'Supports English and Egyptian Arabic with accurate RTL/LTR handling',
+        'Forwards visitor follow-ups and unanswered questions via Telegram',
+      ],
+      stack: ['Python', 'Gradio', 'Groq API', 'RAG', 'Telegram Bot'],
+      viewCodeLabel: 'View Code',
+      chatCtaLabel: 'Chat with My Digital Twin',
+      openNewTabLabel: 'Open in new tab ↗',
+      comingSoonLabel: 'Live demo coming soon',
+      comingSoonNote:
+        'The chatbot service is configured for cloud deployment and will be enabled here once its public URL is live.',
+    },
     background: {
       eyebrow: 'Background & Credentials',
       title: 'Education, Experience, and Certifications',
@@ -263,12 +293,31 @@ export const SITE_CONTENT = {
       benefitLabel: 'Customer Benefit',
       toolsLabel: 'Tools Used',
       repoLinkLabel: 'View Project on GitHub ↗',
+      viewCodeLabel: 'View Code',
+      featuredBadge: 'Featured Project',
+      chatCtaLabel: 'Chat with My Digital Twin',
+      openNewTabLabel: 'Open in new tab ↗',
+      liveDemoSoon: 'Live demo coming soon',
       statusComplete: 'Completed Project',
       statusInDev: 'In Development',
       canvasSectionTitle: 'Optional: Interactive Automation Workflow View',
       canvasSectionDesc:
         'Want to see how an automation workflow runs step by step? Click "Execute Workflow" below to explore the interactive n8n-style canvas.',
       projects: [
+        {
+          id: 'digital-twin',
+          title: 'AI Digital Twin',
+          featured: true,
+          status: 'in-dev',
+          problem:
+            'Visitors and potential clients want immediate answers about my background, skills, and projects outside regular hours without hunting through static pages.',
+          built:
+            'A conversational AI experience built with Python, Gradio, Groq, and strict CV-only RAG that lets visitors explore my background, skills, and projects in English or Egyptian Arabic, while forwarding contact requests via Telegram.',
+          benefit:
+            'Delivers accurate, verifiable Q&A around the clock while capturing genuine visitor inquiries seamlessly.',
+          stack: ['Python', 'Gradio', 'Groq API', 'RAG', 'Telegram Bot'],
+          repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
+        },
         {
           id: 'support-assistant',
           title: 'AI Customer Support Agent',
@@ -294,19 +343,6 @@ export const SITE_CONTENT = {
             'Highlights key decisions in seconds while keeping sensitive business emails 100% private on your own computer.',
           stack: ['n8n', 'Python', 'Gmail API', 'Ollama'],
           repoUrl: 'https://github.com/zyadwaled780-cmd/gmail-ollama-summarizer',
-        },
-        {
-          id: 'digital-twin',
-          title: 'Digital Twin of Me',
-          status: 'in-dev',
-          problem:
-            'Visitors often want quick answers about a specialist’s background and services outside business hours.',
-          built:
-            'A personal AI assistant project designed to answer questions based on verified portfolio and CV data.',
-          benefit:
-            'Demonstrates how a business or professional can offer an always-available assistant trained on verified information.',
-          stack: ['Python', 'RAG', 'AI Assistant'],
-          repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
         },
         {
           id: 'ai-learning-app',
@@ -337,18 +373,28 @@ export const SITE_CONTENT = {
       ],
     },
     digitalTwin: {
-      launcherLabel: 'Digital Twin',
-      statusBadge: 'In development',
-      panelTitle: 'Digital Twin Assistant',
-      panelSubtitle: 'AI Assistant · In development',
-      description:
-        'This interactive AI assistant is currently in development and not active yet. When completed, it will answer questions about my services and background using verified CV data only.',
-      note:
-        'In the meantime, you can reach me directly by phone or email for an immediate response:',
-      repoLabel: 'View Digital Twin repository on GitHub ↗',
-      minimizeAria: 'Minimize Digital Twin panel',
-      closeAria: 'Close Digital Twin panel',
-      openAria: 'Open Digital Twin status panel (In development)',
+      launcherLabel: 'AI Digital Twin',
+      statusBadgeSoon: 'Live demo coming soon',
+      statusBadgeLive: 'Chat live',
+      panelTitle: 'AI Digital Twin',
+      panelSubtitleSoon: 'Live demo coming soon',
+      panelSubtitleLive: 'Conversational CV Assistant',
+      descriptionSoon:
+        'A conversational AI experience that lets visitors learn about my background, skills, and projects. The hosted live demo is coming soon once public cloud deployment is active.',
+      descriptionDirect:
+        'Open the live AI Digital Twin assistant in a new browser tab to ask about my background, skills, and projects in English or Arabic.',
+      noteSoon:
+        'Meanwhile, you can explore the source code or reach me directly:',
+      iframeTitle: 'Zyad Waled Talat — AI Digital Twin Chat',
+      loadingText: 'Waking up the AI Digital Twin… First load on free cloud hosting can take 30–60 seconds.',
+      slowLoadHint: 'Taking longer than usual? You can open the full chat directly in a new tab:',
+      chatCtaLabel: 'Chat with My Digital Twin',
+      openNewTabLabel: 'Open in new tab ↗',
+      viewCodeLabel: 'View Code',
+      minimizeAria: 'Minimize AI Digital Twin panel',
+      closeAria: 'Close AI Digital Twin panel',
+      openAriaSoon: 'Open AI Digital Twin panel (Live demo coming soon)',
+      openAriaLive: 'Chat with My Digital Twin',
     },
     footer: {
       copyright: '© Zyad Waled Talat · AI and Automation Specialist · 6th of October City, Egypt',
@@ -486,6 +532,24 @@ export const SITE_CONTENT = {
         'استعرض مشاريعي المنفذة وتجربة سير العمل التفاعلية في صفحة الأعمال المخصصة.',
       workBannerCta: 'استعرض المشاريع ←',
     },
+    featuredTwin: {
+      eyebrow: 'مشروع مميز',
+      title: 'التوأم الرقمي بالذكاء الاصطناعي (AI Digital Twin)',
+      description:
+        'تجربة محادثة تفاعلية بالذكاء الاصطناعي تتيح للزوار استكشاف خلفيتي المهنية ومهاراتي ومشاريعي باللغتين العربية والإنجليزية بالاعتماد الحصري على بيانات السيرة الذاتية مع إرسال الاستفسارات عبر Telegram.',
+      highlights: [
+        'إجابات دقيقة مبنية حصرياً على السيرة الذاتية المعتمدة',
+        'دعم كامل للغتين العربية المصرية والإنجليزية مع معالجة RTL/LTR',
+        'تسجيل طلبات التواصل والأسئلة غير المغطاة عبر بوت Telegram',
+      ],
+      stack: ['Python', 'Gradio', 'Groq API', 'RAG', 'Telegram Bot'],
+      viewCodeLabel: 'عرض الكود',
+      chatCtaLabel: 'تحدث مع التوأم الرقمي',
+      openNewTabLabel: 'فتح في تبويب جديد ↗',
+      comingSoonLabel: 'العرض المباشر قريباً',
+      comingSoonNote:
+        'المشروع مهيأ للاستضافة السحابية وسيتم تفعيل رابط المحادثة المباشر هنا فور نشره.',
+    },
     background: {
       eyebrow: 'المؤهلات والخبرات',
       title: 'التعليم، والخبرة المهنية، والشهادات المعتمدة',
@@ -600,12 +664,31 @@ export const SITE_CONTENT = {
       benefitLabel: 'الفائدة للعميل',
       toolsLabel: 'الأدوات المستخدمة',
       repoLinkLabel: 'عرض المشروع على GitHub ↗',
+      viewCodeLabel: 'عرض الكود',
+      featuredBadge: 'مشروع مميز',
+      chatCtaLabel: 'تحدث مع التوأم الرقمي',
+      openNewTabLabel: 'فتح في تبويب جديد ↗',
+      liveDemoSoon: 'العرض المباشر قريباً',
       statusComplete: 'مشروع مكتمل',
       statusInDev: 'قيد التطوير',
       canvasSectionTitle: 'اختياري: استعراض مخطط سير العمل التفاعلي',
       canvasSectionDesc:
         'هل ترغب في تجربة كيف يعمل مسار الأتمتة خطوة بخطوة؟ اضغط على زر التشغيل أدناه لاستكشاف لوحة سير العمل التفاعلية.',
       projects: [
+        {
+          id: 'digital-twin',
+          title: 'التوأم الرقمي بالذكاء الاصطناعي (AI Digital Twin)',
+          featured: true,
+          status: 'in-dev',
+          problem:
+            'يحتاج الزوار والعملاء المحتملون إلى إجابات فورية وموثوقة عن الخلفية المهنية والمهارات والمشاريع في أي وقت.',
+          built:
+            'مساعد محادثة بالذكاء الاصطناعي مبني بـ Python وGradio وGroq واسترجاع CV-Only RAG، يتيح للزوار السؤال بالعربية المصرية أو الإنجليزية ويرسل طلبات المتابعة عبر Telegram.',
+          benefit:
+            'يوفر محادثة تفاعلية متاحة دائماً تعتمد على حقائق السيرة الذاتية فقط وتسهل بدء التواصل المباشر.',
+          stack: ['Python', 'Gradio', 'Groq API', 'RAG', 'Telegram Bot'],
+          repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
+        },
         {
           id: 'support-assistant',
           title: 'مساعد خدمة العملاء بالذكاء الاصطناعي',
@@ -631,19 +714,6 @@ export const SITE_CONTENT = {
             'معرفة النقاط المهمة في ثوانٍ معدودة مع الحفاظ على خصوصية الرسائل بالكامل على جهازك.',
           stack: ['n8n', 'Python', 'Gmail API', 'Ollama'],
           repoUrl: 'https://github.com/zyadwaled780-cmd/gmail-ollama-summarizer',
-        },
-        {
-          id: 'digital-twin',
-          title: 'التوأم الرقمي الشخصي',
-          status: 'in-dev',
-          problem:
-            'حاجة العملاء والزوار إلى إجابات سريعة حول الخبرات والخدمات في أي وقت.',
-          built:
-            'مشروع مساعد ذكي شخصي مصمم للإجابة عن الأسئلة بالاعتماد على بيانات السيرة الذاتية والمشاريع الموثقة.',
-          benefit:
-            'يوضح كيف يمكن لأي شركة أو مقدم خدمة توفير مساعد رقمي يجيب عن استفسارات العملاء بمعلومات موثوقة.',
-          stack: ['Python', 'RAG', 'AI Assistant'],
-          repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
         },
         {
           id: 'ai-learning-app',
@@ -675,17 +745,27 @@ export const SITE_CONTENT = {
     },
     digitalTwin: {
       launcherLabel: 'التوأم الرقمي',
-      statusBadge: 'قيد التطوير',
-      panelTitle: 'مساعد التوأم الرقمي',
-      panelSubtitle: 'مساعد ذكاء اصطناعي · قيد التطوير',
-      description:
-        'هذا المساعد الذكي قيد التطوير حالياً وليس مفعّلاً للمحادثة بعد. عند اكتماله، سيجيب عن استفساراتك حول خدماتي وخبراتي بالاعتماد على بيانات سيرتي الذاتية الموثقة فقط.',
-      note:
-        'في الوقت الحالي، يسعدني تواصلك معي مباشرة عبر الهاتف أو البريد الإلكتروني للرد الفوري:',
-      repoLabel: 'عرض مستودع التوأم الرقمي على GitHub ↗',
+      statusBadgeSoon: 'العرض المباشر قريباً',
+      statusBadgeLive: 'متاح الآن',
+      panelTitle: 'التوأم الرقمي بالذكاء الاصطناعي',
+      panelSubtitleSoon: 'العرض المباشر قريباً',
+      panelSubtitleLive: 'مساعد محادثة السيرة الذاتية',
+      descriptionSoon:
+        'تجربة محادثة بالذكاء الاصطناعي تتيح للزوار معرفة المزيد عن خلفيتي ومهاراتي ومشاريعي. العرض المباشر قيد التجهيز للنشر السحابي.',
+      descriptionDirect:
+        'افتح التوأم الرقمي في تبويب جديد لطرح الأسئلة حول خبراتي ومهاراتي ومشاريعي بالعربية أو الإنجليزية.',
+      noteSoon:
+        'في الوقت الحالي يمكنك استعراض الكود المصدري أو التواصل معي مباشرة:',
+      iframeTitle: 'زياد وليد طلعت — محادثة التوأم الرقمي بالذكاء الاصطناعي',
+      loadingText: 'جارٍ تشغيل التوأم الرقمي… قد يستغرق التحميل الأول على الاستضافة المجانية ٣٠–٦٠ ثانية.',
+      slowLoadHint: 'هل استغرق التحميل وقتاً أطول من المعتاد؟ يمكنك فتح المحادثة مباشرة في تبويب جديد:',
+      chatCtaLabel: 'تحدث مع التوأم الرقمي',
+      openNewTabLabel: 'فتح في تبويب جديد ↗',
+      viewCodeLabel: 'عرض الكود',
       minimizeAria: 'تصغير نافذة التوأم الرقمي',
       closeAria: 'إغلاق نافذة التوأم الرقمي',
-      openAria: 'فتح نافذة حالة التوأم الرقمي (قيد التطوير)',
+      openAriaSoon: 'فتح نافذة التوأم الرقمي (العرض المباشر قريباً)',
+      openAriaLive: 'تحدث مع التوأم الرقمي',
     },
     footer: {
       copyright: '© زياد وليد طلعت · أخصائي الذكاء الاصطناعي والأتمتة · مدينة 6 أكتوبر، مصر',
@@ -737,10 +817,11 @@ export const content = {
     contactPitch: SITE_CONTENT.en.contact.lead,
   },
   digitalTwin: {
-    title: 'Digital Twin',
-    subtitle: 'AI Assistant · In development',
-    description: SITE_CONTENT.en.digitalTwin.description,
-    badge: 'In development',
+    title: 'AI Digital Twin',
+    subtitle: 'AI Assistant · Live demo coming soon',
+    description: SITE_CONTENT.en.featuredTwin.description,
+    badge: 'Live demo coming soon',
+    ctaLabel: 'Live demo coming soon',
   },
   links: {
     linkedin: CONTACT_INFO.linkedin,

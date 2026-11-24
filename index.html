@@ -289,8 +289,47 @@
         </div>
       </section>
 
+      <!-- ======== Featured Project: AI Digital Twin ======== -->
+      <section class="section" id="ai-digital-twin">
+        <div class="container">
+          <div class="featured-twin-card">
+            <div>
+              <div class="featured-twin-card__header">
+                <span class="section-eyebrow" id="home-twin-eyebrow" style="margin-bottom: 0;">Featured Project</span>
+                <span class="project-status-badge project-status-badge--dev" id="home-twin-status">Live demo coming soon</span>
+              </div>
+              <h2 class="featured-twin-card__title" id="home-twin-title">AI Digital Twin</h2>
+              <p class="featured-twin-card__desc" id="home-twin-desc">
+                A conversational AI experience that lets visitors learn about my background, skills, and projects — powered by strict CV-only retrieval (RAG), bilingual English &amp; Egyptian Arabic support, and Telegram notification forwarding.
+              </p>
+              <ul class="featured-twin-card__highlights" id="home-twin-highlights"></ul>
+            </div>
+
+            <div class="featured-twin-card__aside">
+              <div>
+                <span class="skills-group__label" id="home-twin-stack-label">Built With</span>
+                <div class="skills-chips" id="home-twin-stack"></div>
+              </div>
+              <div class="featured-twin-card__actions" id="home-twin-actions">
+                <a
+                  class="btn btn--outline"
+                  id="home-twin-view-code"
+                  href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Code
+                </a>
+                <span class="demo-status-pill" id="home-twin-coming-soon">Live demo coming soon</span>
+              </div>
+              <p class="featured-twin-card__note" id="home-twin-note"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ======== 4. Background & Credentials Section ======== -->
-      <section class="section" id="background">
+      <section class="section section--alt" id="background">
         <div class="container">
           <div class="section-header section-header--split">
             <div>
@@ -356,7 +395,7 @@
       </section>
 
       <!-- ======== 5. Contact Section ======== -->
-      <section class="section section--alt" id="contact">
+      <section class="section" id="contact">
         <div class="container">
           <div class="contact-card">
             <span class="section-eyebrow" id="contact-eyebrow">Contact Me</span>
@@ -543,30 +582,84 @@
       </div>
 
       <div class="digital-twin-panel__body">
-        <p class="digital-twin-panel__text" id="dt-panel-desc"></p>
-        <p class="digital-twin-panel__text" id="dt-panel-note" style="font-weight: 600; color: var(--text);"></p>
-        <div class="digital-twin-panel__actions">
-          <a class="btn btn--primary" id="dt-call-btn" href="tel:+201006889003">Call Me</a>
+        <div class="dt-embed-wrap" id="dt-embed-wrap" hidden>
+          <div class="dt-embed-shell">
+            <div class="dt-embed-loading" id="dt-embed-loading">
+              <p class="digital-twin-panel__text" id="dt-loading-text"></p>
+              <p class="featured-twin-card__note" id="dt-slow-hint" hidden></p>
+              <a
+                class="btn btn--outline"
+                id="dt-loading-open-tab"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+              >
+                Open in new tab ↗
+              </a>
+            </div>
+            <div id="dt-iframe-host" style="width: 100%; height: 100%;"></div>
+          </div>
+          <div class="dt-embed-footer">
+            <a
+              class="digital-twin-panel__repo"
+              id="dt-open-tab"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in new tab ↗
+            </a>
+            <a
+              class="digital-twin-panel__repo"
+              id="dt-embed-repo"
+              href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Code
+            </a>
+          </div>
+        </div>
+
+        <div class="dt-panel-section" id="dt-fallback-body" style="display: flex; flex-direction: column; gap: 14px;">
+          <p class="digital-twin-panel__text" id="dt-panel-desc"></p>
+          <div id="dt-direct-live-wrap" hidden>
+            <a
+              class="btn btn--primary"
+              id="dt-direct-live-btn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="width: 100%;"
+            >
+              Chat with My Digital Twin ↗
+            </a>
+          </div>
+          <p class="digital-twin-panel__text" id="dt-panel-note" style="font-weight: 600; color: var(--text);"></p>
+          <div class="digital-twin-panel__actions">
+            <a class="btn btn--primary" id="dt-call-btn" href="tel:+201006889003">Call Me</a>
+            <a
+              class="btn btn--secondary"
+              id="dt-whatsapp-btn"
+              href="https://wa.me/201006889003"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp Me
+            </a>
+            <a class="btn btn--secondary" id="dt-email-btn" href="mailto:zyadwaled780@gmail.com">Email Me</a>
+          </div>
           <a
-            class="btn btn--secondary"
-            id="dt-whatsapp-btn"
-            href="https://wa.me/201006889003"
+            class="digital-twin-panel__repo"
+            id="dt-panel-repo"
+            href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
             target="_blank"
             rel="noopener noreferrer"
           >
-            WhatsApp Me
+            View Code
           </a>
-          <a class="btn btn--secondary" id="dt-email-btn" href="mailto:zyadwaled780@gmail.com">Email Me</a>
         </div>
-        <a
-          class="digital-twin-panel__repo"
-          id="dt-panel-repo"
-          href="https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View Digital Twin repository on GitHub ↗
-        </a>
       </div>
     </div>
 

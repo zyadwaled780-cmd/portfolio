@@ -316,9 +316,9 @@ export function createDigitalTwinNode(worldEl, x, y, data = {}) {
       <button
         class="btn-node-action btn-digital-twin"
         type="button"
-        aria-label="Digital Twin chatbot coming soon"
+        aria-label="${data.ctaLabel || 'Live demo coming soon'}"
       >
-        [ ◉ Coming Soon ]
+        [ ◉ ${data.ctaLabel || 'Live demo coming soon'} ]
       </button>
     </div>
     <div class="node__handle node__handle--input"></div>
