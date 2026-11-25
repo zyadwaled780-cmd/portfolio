@@ -29,7 +29,7 @@ export const CONTACT_INFO = {
  */
 export const DIGITAL_TWIN_CONFIG = {
   repoUrl: 'https://github.com/zyadwaled780-cmd/Digital-Twin-of-Mine-',
-  liveUrl: '',
+  liveUrl: 'https://digital-twin-of-mine.vercel.app',
   embedEnabled: true,
 };
 
